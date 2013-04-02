@@ -1,0 +1,511 @@
+%%\VignetteIndexEntry{An Introduction to BiSeq}
+%\VignetteDepends{}
+%\VignetteKeywords{sequence, sequencing, Methylseq, DNAMethylation}
+%\VignettePackage{BiSeq}
+
+\documentclass[12pt]{article}
+
+\usepackage{times}
+\usepackage{hyperref}
+\usepackage{verbatim} %TEMP: only for block comments
+\usepackage{float}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\Rcode}[1]{{\texttt{#1}}}
+
+\SweaveOpts{prefix.string=BiSeq}
+
+
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+
+\title{BiSeq: A package for analyzing targeted bisulfite sequencing data}
+\author{Katja Hebestreit, Hans-Ulrich Klein}
+\date{March 27, 2013}
+
+\maketitle
+
+\tableofcontents
+
+<<echo=FALSE>>=
+options(width=60)
+options(continue=" ")
+@
+
+\newpage
+
+\section{Introduction}
+The \Rpackage{BiSeq} package provides useful classes and functions to handle and analyze targeted bisulfite sequencing (BS) data such as reduced representation bisulfite sequencing (RRBS) data. In particular, it implements an algorithm to detect differentially methylated regions (DMRs), as described in detail in \cite{hebestreit2013}. The package takes already aligned BS data from one or multiple samples. Until now, it was used for the analysis of CpG methylation of human and mouse samples only.
+
+\newpage
+\section{Data import and classes}
+
+\subsection{Sample data}
+As sample data we use a small part of a recently published data set, see \cite{Schoofs2012}. It comprises RRBS data from 10 samples of CpG sites from genomic regions on p arms of chromosome 1 and 2 covered in at least one sample. Data was obtained from 5 bone marrow probes of patients with acute promyelocytic leukemia (APL) and 5 control samples (APL in remission). RRBS data was preprocessed with the Bismark software version 0.5 \cite{Krueger2011}.
+
+
+\subsection{Import of Bismark's methylation output files}
+\label{import}
+Bismark \cite{Krueger2011} is a tool to map bisulfite converted sequencing reads and to determine cytosine methylation states. \Rpackage{BiSeq} allows the import of Bismark output files. 
+<<preliminaries>>=
+library(BiSeq)
+@
+\Rfunction{readBismark} imports the CpG context output files created by the methylation extractor of Bismark:
+<<label=read, eval=FALSE>>=
+readBismark(otFiles, obFiles, colData)
+@
+The arguments \Rfunarg{otFiles} and \Rfunarg{obFiles} point to Bismark's output files for the positive (original top) and the negative (original bottom) strand respectively. \Rfunarg{colData} specifies the sample names and additional phenotype information. This method returns a \Rclass{BSraw} object.
+
+\subsection{The \Rclass{BSraw} and \Rclass{BSrel} classes}
+\label{classes}
+The \Rpackage{BiSeq} package contains the classes \Rclass{BSraw} and \Rclass{BSrel}, both derived from \Rclass{SummarizedExperiment}.
+
+\subsubsection{The BSraw class}
+The \Rclass{BSraw} class is a container for 'raw' RRBS data. It comprises sample information together with CpG positions and numbers of reads spanning the CpG positions as well as the number of methylated reads.
+
+A \Rclass{BSraw} object consists of four slots:
+
+\begin{enumerate}
+\item A \Rclass{SimpleList} of arbitrary content describing the overall experiment, accessible with \Rfunction{exptData}.
+\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowData}. 
+\item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}. 
+\item An \Rcode{assays} slot containing a \Rclass{SimpleList} of two matrices, one containing the numbers of reads (accessible with \Rfunction{totalReads}) and the other the numbers of methylated reads (accessible with \Rfunction{methReads}).
+\end{enumerate}
+
+A new \Rclass{BSraw} object can be created by:
+<<results=hide>>=
+exptData <- SimpleList(Sequencer = "Instrument", Year = "2013")
+rowData <- GRanges(seqnames = "chr1",
+                  ranges = IRanges(start = c(1,2,3), end = c(1,2,3)))
+colData <- DataFrame(group = c("cancer", "control"),
+                     row.names = c("sample_1", "sample_2"))
+totalReads <- matrix(c(rep(10L, 3), rep(5L, 3)), ncol = 2)
+methReads <- matrix(c(rep(5L, 3), rep(5L, 3)), ncol = 2)
+BSraw(exptData = exptData,
+      rowData = rowData,
+      colData = colData,
+      totalReads = totalReads,
+      methReads = methReads)
+@
+
+
+We load and show the APL data:
+<<>>=
+data(rrbs)
+rrbs
+@
+We show the sample characteristics slot:
+<<>>=
+colData(rrbs)
+@
+The first CpG sites on chromosome 1 which were covered:
+<<>>=
+head(rowData(rrbs))
+@
+The coverage of the first CpG sites per sample:
+<<>>=
+head(totalReads(rrbs))
+@
+The number of methylated reads of the first CpG sites per sample:
+<<>>=
+head(methReads(rrbs))
+@
+
+\subsubsection{The BSrel class}
+The \Rclass{BSrel} is a container for 'relative' methylation levels of BS data. It comprises sample information together with CpG positions and the relative methylation values (between 0 and 1).
+
+A \Rclass{BSrel} object consists of four slots:
+
+\begin{enumerate}
+\item A \Rclass{SimpleList} of arbitrary content describing the overall experiment, accessible with \Rfunction{exptData}.
+\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowData}. 
+\item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}. 
+\item An \Rcode{assays} slot containing a \Rclass{SimpleList} of a matrix with the relative methylation levels (between 0 and 1), accessible with \Rfunction{methLevel}.
+\end{enumerate}
+
+A new \Rclass{BSraw} object can be created by:
+<<results=hide>>=
+methLevel <- matrix(c(rep(0.5, 3), rep(1, 3)), ncol = 2)
+BSrel(exptData = exptData,
+      rowData = rowData,
+      colData = colData,
+      methLevel = methLevel)
+@
+
+We can convert a \Rclass{BSraw} object to a \Rclass{BSrel} object easily:
+<<>>=
+rrbs.rel <- rawToRel(rrbs)
+rrbs.rel
+@
+The relative methylation values of the first CpG sites:
+<<>>=
+head(methLevel(rrbs.rel))
+@
+
+\subsection{Data handling}
+All methods for \Rclass{SummarizedExperiment} objects are applicable for \Rclass{BSraw} and \Rclass{BSrel} objects:
+<<>>=
+dim(rrbs)
+colnames(rrbs)
+@
+We can return subsets of samples or CpG sites:
+<<results=hide>>=
+rrbs[,"APL2"]
+ind.chr1 <- which(seqnames(rrbs) == "chr1")
+rrbs[ind.chr1,]
+@
+We can also subset by overlaps with a \Rclass{GRanges} object:
+<<>>=
+region <- GRanges(seqnames="chr1", 
+                  ranges=IRanges(start = 875200, 
+                                 end = 875500))
+@
+<<results=hide>>=
+findOverlaps(rrbs, region)
+subsetByOverlaps(rrbs, region)
+@
+We can sort \Rclass{BSraw} and \Rclass{BSrel} objects into ascending order of CpG sites positions on chromosomes:
+<<results=hide>>=
+sort(rrbs)
+@
+\Rclass{BSraw} and \Rclass{BSrel} objects can be combined and splitted:
+<<results=hide>>=
+combine(rrbs[1:10,1:2], rrbs[1:1000, 3:10])
+split(rowData(rrbs), 
+      f = as.factor(as.character(seqnames(rrbs))))
+@
+
+\newpage
+\section{Quality control}
+Via two very simple methods it is possible to compare the sample's coverages. \Rfunction{covStatistics} lists the number of CpG sites that were covered per sample together with the median of the coverage of these CpG sites. \Rfunction{covBoxplots} represent the coverage distributions per sample.
+<<>>=
+covStatistics(rrbs)
+@
+\begin{figure}[H]
+\begin{center}
+<<fig=TRUE,width=5,height=5>>=
+covBoxplots(rrbs, col = "cornflowerblue", las = 2)
+@
+\end{center}
+\caption{Sample wise coverage distributions}
+\end{figure}
+
+\newpage
+\section{Detection of DMRs within groups of samples}
+The algorithm to detect differentially methylated regions (DMRs) within two groups of samples (e.g. cancer and control) is described in detail in \cite{hebestreit2013}. To better understand this User's guide it is helpful to know the rough procedure. The DMR detection is a five-steps approach:
+\begin{enumerate}
+ \item Definition of CpG clusters
+ \item Smooth methylation data within CpG clusters
+ \item Model and test group effect for each CpG site within CpG clusters
+ \item Apply hierarchical testing procedure:
+ \begin{enumerate}
+  \item Test CpG clusters for differential methylation and control weighted FDR on cluster
+  \item Trim rejected CpG clusters and control FDR on single CpGs
+ \end{enumerate}
+ \item Define DMR boundaries
+\end{enumerate}
+Please see \cite{hebestreit2013} for more details.
+
+\subsection{Definition of CpG clusters}
+In order to smooth the methylation data we first have to detect CpG clusters (regions with a high spatial density of covered CpG sites). Within a \Rclass{BSraw} object \Rfunction{clusterSites} searches for agglomerations of CpG sites across all samples. In a first step the data is reduced to CpG sites covered in\\ \Rcode{round(\Rfunarg{perc.samples}*ncol(\Rfunarg{object}))} samples (here: 4 samples), these are called 'frequently covered CpG sites'. In a second step regions are detected where not less than \Rfunarg{min.sites} frequently covered CpG sites are sufficiantly close to each other (\Rfunarg{max.dist}. Note, that the frequently covered CpG sites are considered to define the boundaries of the CpG clusters only. For the subsequent analysis the methylation data of all CpG sites within these clusters are used.
+
+We perform the analysis on a subset of our data to save time:
+<<>>=
+rrbs.small <- rrbs[1:1000,]
+rrbs.clust.unlim <- clusterSites(object = rrbs.small, 
+                                 groups = colData(rrbs)$group, 
+                                 perc.samples = 4/5, 
+                                 min.sites = 20, 
+                                 max.dist = 100)
+@
+\Rcode{rrbs.clust.unlim} is a again \Rclass{BSraw} object but restricted to CpG sites within CpG clusters. Each CpG site is assigned to a cluster:
+<<>>=
+head(rowData(rrbs.clust.unlim))
+@
+The underlying CpG clusters can also be converted to a \Rclass{GRanges} object with the start and end positions:
+<<>>=
+clusterSitesToGR(rrbs.clust.unlim)
+@
+
+\subsection{Smooth methylation data}
+In the smoothing step CpG sites with high coverages get high weights. To reduce bias due to unusually high coverages we limit the coverage, e.g. to the 90\% quantile:
+<<>>=
+ind.cov <- totalReads(rrbs.clust.unlim) > 0
+quant <- quantile(totalReads(rrbs.clust.unlim)[ind.cov], 0.9)
+quant
+rrbs.clust.lim <- limitCov(rrbs.clust.unlim, maxCov = quant)
+@
+\begin{figure}[htbp]
+\begin{center}
+<<fig=TRUE,width=5,height=5>>=
+covBoxplots(rrbs.clust.lim, col = "cornflowerblue", las = 2)
+@
+\end{center}
+\caption{Sample wise coverage distributions after coverage limitation}
+\end{figure}
+We then smooth the methylation values of CpG sites within the clusters with the default bandwidth \Rcode{h = 80} base pairs. It is possible - and recommended - to parallelize this step by setting \Rfunarg{mc.cores}, to 6 cores for instance, if there are 6 available.
+<<results=hide>>=
+predictedMeth <- predictMeth(object = rrbs.clust.lim)
+@
+\Rcode{predictedMeth} is a \Rclass{BSrel} object with smoothed relative methylation levels for each CpG site within CpG clusters:
+<<>>=
+predictedMeth
+@
+The effect of the smoothing step can be shown with the \Rfunction{plotMeth} function:
+\begin{figure}[H]
+\begin{center}
+<<fig=TRUE,width=5,height=5>>=
+plotMeth(object.raw = rrbs[,6], 
+         object.rel = predictedMeth[,6],
+         region = region,
+         lwd.lines = 2,
+         col.points = "blue",
+         cex = 1.5)
+@
+\end{center}
+\caption{Raw data together with smoothed methylation levels}
+\end{figure}
+
+
+\subsection{Model and test group effect}
+We observe a differential methylation between cancer and control for some CpG sites:
+\begin{figure}[H]
+\begin{center}
+<<fig=TRUE,width=5,height=5>>=
+cancer <- predictedMeth[, colData(predictedMeth)$group == "APL"]
+control <- predictedMeth[, colData(predictedMeth)$group == "control"]
+mean.cancer <- rowMeans(methLevel(cancer))
+mean.control <- rowMeans(methLevel(control))
+plot(mean.control,
+     mean.cancer,
+     col = "blue",
+     xlab = "Methylation in controls",
+     ylab = "Methylation in APLs")
+@
+\end{center}
+\caption{Smoothed methylation levels in APL and control samples}
+\end{figure}
+To detect the CpG sites where the DNA methylation differs between APL and control samples we model the methylation within a beta regression with the group as explanatory variable and use the Wald test to test if there is a group effect:
+<<results=hide>>=
+## To shorten the run time set mc.cores, if possible!
+betaResults <- betaRegression(formula = ~group, 
+                              link = "probit",
+                              object = predictedMeth, 
+                              type = "BR")
+@
+<<>>=
+## OR:
+data(betaResults)
+@
+\Robject{betaResults} is a \Rclass{data.frame} containing model and test information for each CpG site:
+<<>>=
+head(betaResults)
+@
+
+By setting \Rcode{type = "BR"} the maximum likelihood with bias reduction is called. This is especially useful, when the sample size is small, see \cite{Gruen2012}. The mean of the response (methylation) is linked to a linear predictor described by \Rcode{\~{} x1 + x2} using a link function while the precision parameter is assumed to be constant. Sometimes the variance of DNA methylation is dependent on the group factor, e.g. the methylation variance in cancer samples is often higher than in normal samples. These additional regressors can be linked to the precision parameter within the formula of type \Rcode{\~{} x1 + x2 | y1 + y2} where the regressors in the two parts can be overlapping, see the documentation in the \Rpackage{betareg} package. 
+
+\subsection{Test CpG clusters for differential methylation}
+The aim is to detect CpG clusters containing at least one differentially methylated location. To do so the P values $p$ from the Wald tests are transformed to $Z$ scores: $z = \Phi^{-1}(1-p)$, which are normally distributed under Null hypothesis (no group effect). As cluster test statistic a standardized $Z$ score average is used. To estimate the standard deviation of the $Z$ scores we have to estimate the correlation and hence the variogram of methylation between two CpG sites within a cluster. The estimation of the standard deviation requires that the distribution of the $Z$ scores follows a standard normal distribution. However, if methylation in both groups differs for many CpG sites the density distribution of P values shows a peak near 0. To ensure that the P values are roughly uniformly distributed to get a variance of the $Z$ scores that is Gaussian with variance 1 we recommend to estimate the variogram (and hence the correlation of $Z$ scores) under the null hypothesis. To do so we model the beta regression again for resampled data:
+<<results=hide>>=
+## Both resampled groups should have the same number of
+## cancer and control samples:  
+predictedMethNull <- predictedMeth[,c(1:4, 6:9)]
+colData(predictedMethNull)$group.null <- rep(c(1,2), 4)     
+## To shorten the run time, please set mc.cores, if possible!
+betaResultsNull <- betaRegression(formula = ~group.null, 
+                                  link = "probit",
+                                  object = predictedMethNull, 
+                                  type="BR")
+@
+<<>>=
+## OR:
+data(betaResultsNull)
+@
+We estimate the variogram for the $Z$ scores obtained for the resampled data:
+<<results=hide>>=
+vario <- makeVariogram(betaResultsNull)
+@
+<<>>=
+## OR:
+data(vario)
+@
+Based on the variogram plot we evaluate the sill (usually near 1) of the variogram and smooth the curve:
+\begin{figure}[H]
+\begin{center}
+<<fig=TRUE,width=5,height=5>>=
+plot(vario$variogram)
+vario.sm <- smoothVariogram(vario, sill = 0.9)
+lines(vario.sm$variogram[,c("h", "v.sm")], 
+      col = "red", lwd = 1.5)
+grid()
+@
+\end{center}
+\caption{Estimated variogram together with the smoothed curve}
+\end{figure}
+The \Robject{vario.sm} object is a list of two:
+<<>>=
+names(vario.sm)
+head(vario.sm$variogram)
+head(vario.sm$pValsList[[1]])
+@
+We replace the \Rcode{pValsList} object (which consists of the test results of the resampled data) by the test results of interest (for group effect):
+<<>>=
+## auxiliary object to get the pValsList for the test
+## results of interest:
+vario.aux <- makeVariogram(betaResults, make.variogram=FALSE)
+vario.sm$pValsList <- vario.aux$pValsList
+head(vario.sm$pValsList[[1]])
+@
+\Rcode{vario.sm} now contains the smoothed variogram under the Null hypothesis together with the P values (and $Z$ scores) from the Wald test, that the group has no effect on methylation. The correlation of the $Z$ scores between two locations in a cluster can now be estimated:
+<<>>=
+locCor <- estLocCor(vario.sm)
+@
+We test each CpG cluster for the presence of at least one differentially methylated location at $q$ what can be interpreted as the size-weighted FDR on clusters:
+<<>>=
+clusters.rej <- testClusters(locCor, 
+                             FDR.cluster = 0.1)
+clusters.rej$clusters.reject
+@
+
+
+\subsection{Trim significant CpG clusters}
+
+We then trim the rejected CpG clusters that is to remove the not differentially methylated CpG sites at $q_1$ what can be interpreted as the location-wise FDR:
+<<>>=
+clusters.trimmed <- trimClusters(clusters.rej, 
+                                 FDR.loc = 0.05)
+head(clusters.trimmed)
+@
+\Robject{clusters.trimmed} is a \Rclass{data.frame} object containing all differentially methylated CpG sites. The \Robject{p.li} column contains the P values estimated in the cluster trimming step, see \cite{hebestreit2013}.
+
+\subsection{Definition of DMR boundaries}
+
+We can now define the boundaries of DMRs as rejected CpG sites within which rejected CpG sites solely are located. Within the DMRs the distance between neighbored rejected CpG sites should not exceed \Rfunarg{max.dist} base pairs (usually the same as for \Rfunarg{max.dist} in \Rfunction{clusterSites}), otherwise, the DMR is splitted. DMRs are also splitted if the methylation difference switches from positive to negative, or vice versa, if \Rcode{diff.dir = TRUE}. That way we ensure that within a DMR all CpG sites are hypermethylated, and hypomethylated respectively.
+<<>>=
+DMRs <- findDMRs(clusters.trimmed, 
+                 max.dist = 100, 
+                 diff.dir = TRUE)
+DMRs
+@
+
+\newpage
+\section{Detection of DMRs between two samples}
+If there are two samples only to be compared we can use the \Rfunction{compareTwoSamples} function which determines the differences per CpG site and aggregates the sites surpassing the minimum difference \Rfunarg{minDiff}:
+<<>>=
+DMRs.2 <- compareTwoSamples(object = predictedMeth,
+                            sample1 = "APL1",
+                            sample2 = "APL10961",
+                            minDiff = 0.3,
+                            max.dist = 100)
+@
+Some of the DMRs detected within these two samples overlap with the group-wise DMRs:
+<<>>=
+sum(overlapsAny(DMRs.2,DMRs))
+@
+
+\newpage
+\section{Further data processing}
+The \Rfunction{plotMethMap} function is helpful to evaluate DMRs graphically. Via \Rcode{zlim = c(0,1)} that is passed to the \Rfunction{heatmap} function we ensure that green stands for a relative methalytion of 0 and red stands for a relative methylation of 1:
+\begin{figure}[H]
+\begin{center}
+<<fig=TRUE,width=5,height=4>>=
+rowCols <- c("magenta", "blue")[as.numeric(colData(predictedMeth)$group)]
+plotMethMap(predictedMeth, 
+            region = DMRs[3],
+            groups = colData(predictedMeth)$group,
+            intervals = FALSE,
+            zlim = c(0,1),
+            RowSideColors = rowCols,
+            labCol = "", margins = c(0, 6))
+@
+\end{center}
+\caption{Methylation map of smoothed methylation data within a detected DMR together with hierarchical clustering of the samples}
+\end{figure}
+To represent the smoothed methylation curves we can use the \Rfunction{plotSmoothMeth} function:
+\begin{figure}[H]
+\begin{center}
+<<fig=TRUE,width=5,height=5>>=
+plotSmoothMeth(object.rel = predictedMeth,
+               region = DMRs[3],
+               groups = colData(predictedMeth)$group,
+               group.average = FALSE,
+               col = c("magenta", "blue"), 
+               lwd = 1.5)
+legend("topright",
+       legend=levels(colData(predictedMeth)$group),
+       col=c("magenta", "blue"),
+       lty=1, lwd = 1.5)
+@
+\end{center}
+\caption{The smoothed methylation curves for all samples within a detected DMR}
+\end{figure}
+
+We can annotate the detected DMRs by means of a \Rclass{GRanges} object, e.g. a list of promoter regions. In case of an overlapping of both \Rclass{GRanges} objects the DMR is marked as \Rcode{TRUE}, or with the respective identifier in the promoter list:
+<<>>=
+data(promoters)
+head(promoters)
+DMRs.anno <- annotateGRanges(object = DMRs,
+                             regions = promoters,
+                             name = 'Promoter',
+                             regionInfo = 'acc_no')
+DMRs.anno
+@
+
+\Rfunction{plotBindingSites} plots the average methylation around given genomic regions, e.g. protein binding sites. Here, we compare the methyation in and around promoter regions between APL and controls:
+\begin{figure}[H]
+\begin{center}
+<<fig=TRUE, results=hide,width=5,height=5>>=
+plotBindingSites(object = rrbs,
+                 regions = promoters,
+                 width = 4000,
+                 group = colData(rrbs)$group,
+                 col = c("magenta", "blue"),
+                 lwd = 1.5)
+legend("top",
+       legend=levels(colData(rrbs)$group),
+       col=c("magenta", "blue"),
+       lty=1, lwd = 1.5)
+@
+\end{center}
+\caption{Methylation around 1,000 promoters; Position 0 refers to the centers of the promoters}
+\end{figure}
+The raw and relative methylation data can also be viewed in the Integrative Genomics Viewer (IGV; freely available for download from \href{http://www.broadinstitute.org/igv}{www.broadinstitute.org/igv}) \cite{Thorvaldsdottir2012}. To do so we first write the methylation information of each sample within the \Rclass{BSraw} or \Rclass{BSrel} object to a bed file:
+<<eval=FALSE>>=
+track.names <- paste(colData(rrbs)$group,
+                     "_",
+                     gsub("APL", "", colnames(rrbs)),
+                     sep="")
+writeBED(object = rrbs,
+         name = track.names,
+         file = paste(colnames(rrbs), ".bed", sep = ""))
+writeBED(object = predictedMeth,
+         name = track.names,
+         file = paste(colnames(predictedMeth), ".bed", sep = ""))
+@
+We can load the bed files of the raw data in the IGV. The integers beneath the CpG marks represent the numbers of sequencing reads covering the CpG sites:
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=15cm]{igv_snapshot}
+\end{center}
+\caption{IGV snapshot of the raw data in and around a detected DMR}
+\end{figure}
+We can also load the smoothed methylation levels:
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=15cm]{igv_snapshot_smoothed}
+\end{center}
+\caption{IGV snapshot of the smoothed data in and around a detected DMR}
+\end{figure}
+
+\newpage
+\bibliographystyle{unsrturl}
+\bibliography{BiSeq}
+
+
+\end{document}
+

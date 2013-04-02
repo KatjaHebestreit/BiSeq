@@ -1,0 +1,61 @@
+import(methods)
+import(BiocGenerics)
+import(Biobase)
+import(IRanges)
+import(GenomicRanges)
+
+importFrom(parallel, mclapply)
+importFrom(betareg, betareg)
+importFrom(lokern, lokerns)
+importFrom(rtracklayer, export.ucsc)
+
+
+exportClasses(
+    BSraw,
+    BSrel
+)
+
+exportMethods(
+    # methods-BSraw.R
+    # methods-BSrel.R
+    combine
+)
+
+export(
+    # methods-BSraw.R
+    # methods-BSrel.R
+    methLevel, "methLevel<-",
+    methReads, "methReads<-",
+    totalReads, "totalReads<-",
+    BSraw,
+    BSrel,
+
+    # other methods from AllGenerics.R
+    annotateGRanges,
+    betaRegression,
+    binomLikelihoodSmooth,
+    clusterSites,
+    clusterSitesToGR,
+    compareTwoSamples,
+    covBoxplots,
+    covStatistics,
+    estLocCor,
+    filterByCov,
+    filterBySharedRegions,
+    findDMRs,
+    limitCov,
+    logisticRegression,
+    makeVariogram,
+    plotBindingSites,
+    plotMeth,
+    plotMethMap,
+    plotSmoothMeth,
+    predictMeth,
+    rawToRel,
+    readBismark,
+    smoothVariogram,
+    summarizeRegions,
+    testClusters,
+    trimClusters,
+    writeBED
+)

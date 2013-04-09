@@ -503,7 +503,6 @@ We can also load the smoothed methylation levels:
 \end{figure}
 
 \newpage
-\bibliographystyle{unsrturl}
 \bibliography{BiSeq}
 
 

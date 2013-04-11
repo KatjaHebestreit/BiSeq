@@ -26,6 +26,9 @@
     colData = DataFrame(row.names=colnames(methLevel)),
     methLevel,
     ...)}.
+
+  However, one will most likely create a \code{BSraw} object when use
+  \code{\link{readBismark}} to load data.
 }
 \section{Slots}{
   \describe{
@@ -63,12 +66,12 @@ Katja Hebestreit
 }
 
 \seealso{
-\code{SummarizedExperiment}, \code{\link{BSraw-class}}
+\code{SummarizedExperiment}, \code{\link{BSraw-class}}, \code{\link{readBismark}}
 }
 \examples{
 showClass("BSrel")
 
-## How to create a BSrel object:
+## How to create a BSrel object by hand:
 exptData <- SimpleList(Sequencer = "Sequencer", Year = "2013")
 rowData <- GRanges(seqnames = "chr1",
                   ranges = IRanges(start = c(1,2,3), end = c(1,2,3)))

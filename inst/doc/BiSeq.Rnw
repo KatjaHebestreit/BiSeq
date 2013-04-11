@@ -26,7 +26,7 @@
 
 \title{BiSeq: A package for analyzing targeted bisulfite sequencing data}
 \author{Katja Hebestreit, Hans-Ulrich Klein}
-\date{March 27, 2013}
+\date{April 11, 2013}
 
 \maketitle
 
@@ -77,7 +77,7 @@ A \Rclass{BSraw} object consists of four slots:
 \item An \Rcode{assays} slot containing a \Rclass{SimpleList} of two matrices, one containing the numbers of reads (accessible with \Rfunction{totalReads}) and the other the numbers of methylated reads (accessible with \Rfunction{methReads}).
 \end{enumerate}
 
-A new \Rclass{BSraw} object can be created by:
+A new \Rclass{BSraw} object can also be created by hand:
 <<results=hide>>=
 exptData <- SimpleList(Sequencer = "Instrument", Year = "2013")
 rowData <- GRanges(seqnames = "chr1",
@@ -92,7 +92,7 @@ BSraw(exptData = exptData,
       totalReads = totalReads,
       methReads = methReads)
 @
-
+Nevertheless, users will most likely create \Rclass{BSraw} objects when use \Rfunction{readBismark} to load data.
 
 We load and show the APL data:
 <<>>=
@@ -503,6 +503,8 @@ We can also load the smoothed methylation levels:
 \end{figure}
 
 \newpage
+
+\bibliographystyle{unsrturl}
 \bibliography{BiSeq}
 
 

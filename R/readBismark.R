@@ -25,10 +25,11 @@
     listB <- scan(obFiles[i], skip=1, sep="\t",
                   what=list(NULL, "character", "character", "numeric", NULL))
 
-    dfT <- data.frame(meth=listT[[2]], chr=listT[[3]], pos=listT[[4]], strand="+",
+    dfT <- data.frame(Meth=listT[[2]], Chr=listT[[3]], Pos=as.integer(listT[[4]]), Strand="+",
                       stringsAsFactors=FALSE)
-    dfB <- data.frame(meth=listB[[2]], chr=listB[[3]], pos=listB[[4]], strand="-",
+    dfB <- data.frame(Meth=listB[[2]], Chr=listB[[3]], Pos=as.integer(listB[[4]]), Strand="-",
                       stringsAsFactors=FALSE)
+    rm(listT, listB)
     
     df <- rbind(dfT, dfB)
     rm(dfT, dfB)
@@ -48,7 +49,7 @@
           reads = as.integer(t),
           chrom = n,
           strand = df[[n]][ind, "Strand"])
-      t <- table(df[[n]][df[[n]][, 1] == "+", 4])
+      t <- table(df[[n]][df[[n]][, 1] == "+", 3])
       if (length(t) > 0) {
         ind <- match(as.integer(names(t)), counts[[n]]$position)
         counts[[n]][ind, "methylated"] <- as.integer(t)

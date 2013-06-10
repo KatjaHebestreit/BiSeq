@@ -13,34 +13,42 @@
 
     cat(paste("Processing sample ", rownames(colData)[i], " ... ", sep=""))
     
-
-    dfT <- read.table(otFiles[i], skip=1, header=FALSE, sep="\t",
-                      stringsAsFactors=FALSE, comment.char="")
-
-    dfB <- read.table(obFiles[i], skip=1, header=FALSE, sep="\t",
-                      stringsAsFactors=FALSE, comment.char="")
+#    dfT <- read.table(otFiles[i], skip=1, header=FALSE, sep="\t",
+#                      stringsAsFactors=FALSE, comment.char="")
+#    dfB <- read.table(obFiles[i], skip=1, header=FALSE, sep="\t",
+#                      stringsAsFactors=FALSE, comment.char="")
+#    dfT$Strand <- "+"
+#    dfB$Strand <- "-"
     
-    dfT$Strand <- "+"
-    dfB$Strand <- "-"
+    listT <- scan(otFiles[i], skip=1, sep="\t",
+                  what=list(NULL, "character", "character", "numeric", NULL))
+    listB <- scan(obFiles[i], skip=1, sep="\t",
+                  what=list(NULL, "character", "character", "numeric", NULL))
+
+    dfT <- data.frame(meth=listT[[2]], chr=listT[[3]], pos=listT[[4]], strand="+",
+                      stringsAsFactors=FALSE)
+    dfB <- data.frame(meth=listB[[2]], chr=listB[[3]], pos=listB[[4]], strand="-",
+                      stringsAsFactors=FALSE)
+    
     df <- rbind(dfT, dfB)
     rm(dfT, dfB)
 
-    df <- split.data.frame(df, df[,3])
+    df <- split.data.frame(df, df[,2])
     df <- lapply(df, function(x) {
-      return(x[order(x[, 4]),])
+      return(x[order(x[, 3]),])
     })
     counts <- list()
   
     for (n in names(df)) {
-      t <- table(df[[n]][,4])
-      ind <- match(as.integer(names(t)), df[[n]][,4])
+      t <- table(df[[n]][,3])
+      ind <- match(as.integer(names(t)), df[[n]][,3])
       counts[[n]] <- data.frame(
           position = as.integer(names(t)),
           methylated = 0,
           reads = as.integer(t),
           chrom = n,
           strand = df[[n]][ind, "Strand"])
-      t <- table(df[[n]][df[[n]][, 2] == "+", 4])
+      t <- table(df[[n]][df[[n]][, 1] == "+", 4])
       if (length(t) > 0) {
         ind <- match(as.integer(names(t)), counts[[n]]$position)
         counts[[n]][ind, "methylated"] <- as.integer(t)

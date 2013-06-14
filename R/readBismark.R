@@ -1,83 +1,37 @@
-.readBismark <- function(otFiles, obFiles, colData) {
+.readBismark <- function(files, colData) {
 
-  if (length(otFiles) != length(obFiles)) {
-    stop("Arguments otFiles and obFiles must be vectors of equal length.")
-  }
-  if (nrow(colData) != length(otFiles)) {
-    stop("Row number of colData must equal length of otFiles and obFiles.")
+  if (nrow(colData) != length(files)) {
+    stop("Row number of colData must equal length of files.")
   }
 
   methData = list()
 
-  for (i in 1:length(otFiles)) {
+  for (i in 1:length(files)) {
 
-    cat(paste("Processing sample ", rownames(colData)[i], " ... ", sep=""))
+    cat(paste("Processing sample ", rownames(colData)[i], " ... \n", sep=""))
+
+    bismark <- scan(files[i], skip=0, sep="\t",
+                    what=list("character", integer(), NULL, NULL, integer(), integer()))
     
-#    dfT <- read.table(otFiles[i], skip=1, header=FALSE, sep="\t",
-#                      stringsAsFactors=FALSE, comment.char="")
-#    dfB <- read.table(obFiles[i], skip=1, header=FALSE, sep="\t",
-#                      stringsAsFactors=FALSE, comment.char="")
-#    dfT$Strand <- "+"
-#    dfB$Strand <- "-"
-    
-    listT <- scan(otFiles[i], skip=1, sep="\t",
-                  what=list(NULL, "character", "character", "numeric", NULL))
-    listB <- scan(obFiles[i], skip=1, sep="\t",
-                  what=list(NULL, "character", "character", "numeric", NULL))
-
-    dfT <- data.frame(Meth=listT[[2]], Chr=listT[[3]], Pos=as.integer(listT[[4]]), Strand="+",
-                      stringsAsFactors=FALSE)
-    dfB <- data.frame(Meth=listB[[2]], Chr=listB[[3]], Pos=as.integer(listB[[4]]), Strand="-",
-                      stringsAsFactors=FALSE)
-    rm(listT, listB)
-    
-    df <- rbind(dfT, dfB)
-    rm(dfT, dfB)
-
-    df <- split.data.frame(df, df[,2])
-    df <- lapply(df, function(x) {
-      return(x[order(x[, 3]),])
-    })
-    counts <- list()
-  
-    for (n in names(df)) {
-      t <- table(df[[n]][,3])
-      ind <- match(as.integer(names(t)), df[[n]][,3])
-      counts[[n]] <- data.frame(
-          position = as.integer(names(t)),
-          methylated = 0,
-          reads = as.integer(t),
-          chrom = n,
-          strand = df[[n]][ind, "Strand"])
-      t <- table(df[[n]][df[[n]][, 1] == "+", 3])
-      if (length(t) > 0) {
-        ind <- match(as.integer(names(t)), counts[[n]]$position)
-        counts[[n]][ind, "methylated"] <- as.integer(t)
-      }
-    }
-    rm(df)
-
     methData[[i]] = GRanges(
-              seqnames=unlist(lapply(counts, function(x) {x$chrom})),
-              ranges=IRanges(start=unlist(lapply(counts, function(x) {x$position})), width=1),
-              strand=unlist(lapply(counts, function(x) {x$strand})),
-              methylated=unlist(lapply(counts, function(x) {as.integer(x$methylated)})),
-              reads=unlist(lapply(counts, function(x) {as.integer(x$reads)}))
-              )
-    methData[[i]] <- methData[[i]][order(methData[[i]])]
-    rm(counts)
-
-    cat("done.\n")
+              seqnames=bismark[[1]],
+              ranges=IRanges(start=bismark[[2]], width=1),
+              methylated=bismark[[5]],
+              reads=bismark[[5]]+bismark[[6]])
+    
+    rm(bismark)
   }
-  
+
+  cat("Building BSraw object.\n")
+
   fData <- methData[[1]]
   
   if(length(methData) > 1){
     for(i in seq(along=methData)[-1]){
-      fData <- union(fData, methData[[i]])
+      fData <- unique(c(fData, methData[[i]]))
     }
   }
-
+  elementMetadata(fData) <- NULL
   names(fData) <- as.character(1:length(fData))
 
   tReads <- matrix(integer(length = length(fData) * length(methData)), nrow=length(fData))
@@ -106,19 +60,19 @@
 }
 
 setMethod("readBismark",
-    signature=c(otFiles="character", obFiles="character", colData="DataFrame"),
+    signature=c(files="character", colData="DataFrame"),
     .readBismark)
           
 setMethod("readBismark",
-    signature=c(otFiles="character", obFiles="character", colData="data.frame"),
-    function(otFiles, obFiles, colData) {
+    signature=c(files="character", colData="data.frame"),
+    function(files, colData) {
       colData = as(colData, "DataFrame")
-      .readBismark(otFiles, obFiles, colData)
+      .readBismark(files, colData)
     })
 
 setMethod("readBismark",
-    signature=c(otFiles="character", obFiles="character", colData="character"),
-    function(otFiles, obFiles, colData) {
+    signature=c(files="character", colData="character"),
+    function(files, colData) {
       colData = DataFrame(row.names=colData)
-      .readBismark(otFiles, obFiles, colData)
+      .readBismark(files, colData)
     })

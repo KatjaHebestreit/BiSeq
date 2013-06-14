@@ -51,15 +51,15 @@ As sample data we use a small part of a recently published data set, see \cite{S
 
 \subsection{Import of Bismark's methylation output files}
 \label{import}
-Bismark \cite{Krueger2011} is a tool to map bisulfite converted sequencing reads and to determine cytosine methylation states. \Rpackage{BiSeq} allows the import of Bismark output files. 
+Bismark \cite{Krueger2011} a bisulfite read mapper and methylation caller. \Rpackage{BiSeq} allows the import of Bismark output files. 
 <<preliminaries>>=
 library(BiSeq)
 @
 \Rfunction{readBismark} imports the CpG context output files created by the methylation extractor of Bismark:
 <<label=read, eval=FALSE>>=
-readBismark(otFiles, obFiles, colData)
+readBismark(files, colData)
 @
-The arguments \Rfunarg{otFiles} and \Rfunarg{obFiles} point to Bismark's output files for the positive (original top) and the negative (original bottom) strand respectively. \Rfunarg{colData} specifies the sample names and additional phenotype information. This method returns a \Rclass{BSraw} object.
+The argument \Rfunarg{files} point to files created by Bismark's \Rcode{methylation\_extractor} and \Rcode{bismark2bedGraph} (see the man page of \Rfunction{readBismark} for details on how to retrieve the right input files). \Rfunarg{colData} specifies the sample names and additional phenotype information. This method returns a \Rclass{BSraw} object.
 
 \subsection{The \Rclass{BSraw} and \Rclass{BSrel} classes}
 \label{classes}

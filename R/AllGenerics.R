@@ -92,7 +92,7 @@ setGeneric("predictMeth", function(object, h, grid.dist, mc.cores)
 setGeneric("rawToRel", function(object) 
     standardGeneric("rawToRel"))
 
-setGeneric("readBismark", function(otFiles, obFiles, colData) 
+setGeneric("readBismark", function(files, colData) 
     standardGeneric("readBismark"))
 
 setGeneric("smoothVariogram", function(variogram, sill, bandwidth) 

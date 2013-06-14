@@ -1,37 +1,40 @@
 \name{readBismark}
 \alias{readBismark}
-\alias{readBismark,character,character,DataFrame-method}
-\alias{readBismark,character,character,character-method}
-\alias{readBismark,character,character,data.frame-method}
+\alias{readBismark,character,DataFrame-method}
+\alias{readBismark,character,character-method}
+\alias{readBismark,character,data.frame-method}
 
 
 \title{Reads cytosine methylation stati determined by Bismark}
 
-\description{Bismark is a tool to map bisulfite converted sequence reads
-and to determine cytosine methylation states. This method reads Bismark's
+\description{Bismark is a bisulfite read mapper and methylation caller. This method reads Bismark's
 output files and returns a \code{BSraw} object.}
 
-\usage{readBismark(otFiles, obFiles, colData)}
+\usage{readBismark(files, colData)}
 
 \arguments{
-  \item{otFiles}{A \code{character} pointing to Bismark's
-    output file for the plus strand (original top).}
-  \item{obFiles}{A \code{character} pointing to Bismark's
-    output file for the minus strand (original bottom).}
+  \item{files}{A \code{character} pointing to \code{bedGraph} files created by
+  Bismark's \code{methylation_extractor} and \code{bismark2bedGraph}; see Details.}
   \item{colData}{Samples' names plus additional sample information
     as \code{character}, \code{data.frame} or \code{DataFrame}.}
 }
 
-\details{The arguments \code{otFiles} and \code{obFiles} point to
-Bismark's output files for the positive (original top) and the negative
-(original bottom) strand respectively. Both \code{character} vectors must be of equal
-length and each vector element corresponds to one sample.
+\details{Input files are created with Bismark as follows (from the
+  command line):
 
-The \code{colData} argument should specify the sample names as
-\code{character}. Alternatively, a \code{data.frame} or
-\code{DataFrame} can be given. Then, the row names are used as
-sample names and the data frame is passed to the final
-\code{BSraw} object.}
+  \code{bismark_methylation_extractor -s --comprehensive test_sample.sam}
+
+  \code{bismark2bedGraph --counts -o CpG_context_test_sample.bedGraph
+    CpG_context_test_sample.txt}
+
+  In this example, the file \code{CpG_context_test_sample.bedGraph} is then the input
+  file to \code{readBismark}.  
+
+  The \code{colData} argument should specify the sample names as
+  \code{character}. Alternatively, a \code{data.frame} or
+  \code{DataFrame} can be given. Then, the row names are used as
+  sample names and the data frame is passed to the final
+  \code{BSraw} object.}
 
 \value{A \code{BSraw} object storing coverage and methylation information.}
 
@@ -42,9 +45,7 @@ sample names and the data frame is passed to the final
 \seealso{\code{\link{BSraw-class}}}
 
 \examples{
-ot <- system.file("extdata", "bismark_OT.txt", package = "BiSeq")
-ob <- system.file("extdata", "bismark_OB.txt", package = "BiSeq")
-rrbs <- readBismark(otFiles = ot,
-                    obFiles = ob,
+file <- system.file("extdata", "CpG_context_test_sample.bedGraph", package = "BiSeq")
+rrbs <- readBismark(file,
                     colData= DataFrame(row.names="sample_1"))
 }

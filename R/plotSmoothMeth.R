@@ -1,5 +1,6 @@
 .plotSmoothMeth <- function(object.rel, region, groups, group.average, ...) {
 
+  object.rel <- sort(object.rel)
   object.rel <- subsetByOverlaps( object.rel, region + 1000 )
 
   if(nrow(object.rel) == 0) {
@@ -27,9 +28,14 @@
   }
   n <- ncol(mLevel)
 
+  if(is.element("cluster.id", colnames(elementMetadata(object.rel)))){
   # one curve for each CpG cluster
-  object.split <- split(object.rel, elementMetadata(object.rel)$cluster.id)
-  pos.rel.split <- lapply(object.split, function(x) start(x))
+    object.split <- split(object.rel, elementMetadata(object.rel)$cluster.id)
+    pos.rel.split <- lapply(object.split, function(x) start(x))
+  } else {
+    object.split <- list(object.rel)
+    pos.rel.split <- list(start(object.rel))
+  }
 
   args <- list(...)
 

@@ -11,10 +11,18 @@
 
 
 \title{
-Retrieves information on methylation recorded in \code{BSraw} classes
+  Assigns CpG cluster memberships on CpG sites within \code{BSraw} objects
 }
 \description{
-  These generic function access methylation information matrices.
+Within a \code{BSraw} object \code{clusterSites} searches for agglomerations of CpG sites across
+all samples. In a first step the data is reduced to CpG sites covered in
+\code{round(perc.samples*ncol(object))} samples, these are
+called 'frequently covered CpG sites'. In a second step regions are detected
+where not less than \code{min.sites} frequently covered CpG sites are sufficiantly
+close to each other (\code{max.dist}). Note, that the frequently covered CpG sites
+are considered to define the boundaries of the CpG clusters only. For the subsequent
+analysis the methylation data of all CpG sites within these clusters
+are used.
 }
 \usage{
 clusterSites(object, groups, perc.samples, min.sites, max.dist,

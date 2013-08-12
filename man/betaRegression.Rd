@@ -47,11 +47,10 @@ methylation level in group 1 and group 2 and methylation difference of
 group 1 and group 2.
 }
 \references{
-  Hebestreit, K., Dugas, M., Mueller-Tidow, C., and Klein HU
-(2013). Detection of Significantly Differentially Methylated Regions in
-Reduced Representation Bisulfite Sequencing Data. In preparation.
+Hebestreit, K., Dugas, M., and Klein HU. Detection of significantly differentially methylated regions in
+targeted bisulfite sequencing Data. In preparation. Bioinformatics. 2013 Jul 1;29(13):1647-53.
   
-  See also reference list in the documentation of \code{\link{betareg}}.
+See also reference list in the documentation of \code{\link{betareg}}.
 }
 
 \author{

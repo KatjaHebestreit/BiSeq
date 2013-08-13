@@ -16,7 +16,7 @@ trimClusters(clusters.rej, FDR.loc)
 
 \arguments{
   \item{clusters.rej}{Output of \code{testClusters}.}
-  \item{FDR.loc}{Location-wise FDR level. Default is 0.02.}
+  \item{FDR.loc}{Location-wise FDR level. Default is 0.2.}
 }
 \details{
 Not differentially methylated CpG sites are removed within the CpG

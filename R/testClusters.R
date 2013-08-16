@@ -41,7 +41,9 @@
                              end=cluster.end))
     elementMetadata(clusters.GR) <- cluster.id
     clusters.reject <- clusters.GR[ind.reject]
+    elementMetadata(clusters.reject)$p.value <- p.cluster[ind.reject]
     clusters.not.reject <- clusters.GR[-ind.reject]
+    elementMetadata(clusters.not.reject)$p.value <- p.cluster[-ind.reject]
     sigma.clusters.reject <- sigma.cluster[ind.reject]
     return(list(FDR.cluster = FDR.cluster,
                 CpGs.clust.reject = CpGs.clust.reject,

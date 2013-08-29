@@ -8,7 +8,8 @@ importFrom(parallel, mclapply)
 importFrom(betareg, betareg)
 importFrom(lokern, lokerns)
 importFrom(rtracklayer, export.ucsc)
-
+importFrom(globaltest, gt)
+importClassesFrom(globaltest, gt.object)
 
 exportClasses(
     BSraw,
@@ -43,6 +44,7 @@ export(
     filterByCov,
     filterBySharedRegions,
     findDMRs,
+    globalTest,
     limitCov,
     logisticRegression,
     makeVariogram,

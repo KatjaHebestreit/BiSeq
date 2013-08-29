@@ -53,6 +53,9 @@ setGeneric("filterBySharedRegions", function(object, groups, perc.samples, no.sa
 setGeneric("findDMRs", function(test.out, alpha, max.dist, diff.dir) 
   standardGeneric("findDMRs"))
 
+setGeneric("globalTest", function(response, alternative, ...)
+  standardGeneric("globalTest"))
+
 setGeneric("limitCov", function(object, maxCov) 
     standardGeneric("limitCov"))
 

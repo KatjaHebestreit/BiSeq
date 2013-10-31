@@ -1,5 +1,7 @@
 .makeVariogram <- function(test.out, make.variogram){
   test.out$z.score <- qnorm(test.out$p.val, lower.tail=FALSE)
+  ind <- which(abs(test.out$z.score) == Inf)
+  test.out$z.score[ind] <- NA
   cl.p <- test.out[!is.na(test.out$z.score),]
   cl.p.list <- split(cl.p, cl.p$cluster.id, drop=TRUE)
   rm(cl.p)

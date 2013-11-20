@@ -21,11 +21,13 @@
       ind.many <- as.numeric(as.character(tab$Var1[ind]))
       matches.one <- matches[!is.element(matches$query, ind.many), ]
 
-      helper[matches.one$query] <- elementMetadata(regions)[, regionInfo][matches.one$subject]
+      helper[matches.one$query] <- unlist(elementMetadata(regions)[, regionInfo])[matches.one$subject]
       
       for(i in ind.many){
         ind.reg <- matches$subject[matches$query == i]
-        ids <- paste(elementMetadata(regions)[,regionInfo][ind.reg], collapse=",")
+        names.reg <- unlist(elementMetadata(regions)[,regionInfo][ind.reg])
+        names.reg <- sort(unique(names.reg))
+        ids <- paste(names.reg, collapse=",")
         helper[i] <- ids
       }
     }

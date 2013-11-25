@@ -19,7 +19,7 @@
       m <- colFunc(elementMetadata(bed)$score) / 255
       elementMetadata(bed)$itemRgb <- rgb(m[,1], m[,2], m[,3])
 
-      bed <- as(as(bed, "RangedData"), "UCSCData")
+      bed <- as(bed, "UCSCData")
       bed@trackLine@name <- paste("\"", name[i], "\"", sep="")
       export.ucsc(bed, con=file[i], subformat="bed")
 
@@ -49,7 +49,7 @@
       m <- colFunc(elementMetadata(bed)$score) / 255
       elementMetadata(bed)$itemRgb <- rgb(m[,1], m[,2], m[,3])
 
-      bed <- as(as(bed, "RangedData"), "UCSCData")
+      bed <- as(bed, "UCSCData")
       bed@trackLine@name <- paste("\"", name[i], "\"", sep="")
       export.ucsc(bed, con=file[i], subformat="bed")
 

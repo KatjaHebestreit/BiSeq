@@ -32,27 +32,23 @@
   min.meth <- min(methLevel(object)[methLevel(object) > 0], na.rm=TRUE)
   max.meth <- max(methLevel(object)[methLevel(object) < 1], na.rm=TRUE)
   
-  object.split <- split(object, f = as.factor(as.character(seqnames(object))), drop = TRUE)
+  object.split <- split(object, f = rep(1:mc.cores, length.out = nrow(object)))
 
-  #l.o <- nrow(object)
-  #i.o <- 0
-  #pb <- txtProgressBar(min=0, max=sum(l.o), style=3)
+  beta.regr <- function(object.part, formula, link, ...){
+    chr <- as.character(seqnames(rowData(object.part)))
+    pred.meth.part <- methLevel(object.part)
 
-  beta.regr <- function(object.chr, formula, link, ...){
-    chr <- as.character(seqnames(rowData(object.chr))[1])
-    pred.meth.chr <- methLevel(object.chr)
+    p.val <- rep(NA,nrow(object.part))
+    meth.group1 <- rep(NA,nrow(object.part))
+    meth.group2 <- rep(NA,nrow(object.part))
+    meth.diff <- rep(NA,nrow(object.part))
+    direction <- rep(NA,nrow(object.part))
+    pseudo.R.sqrt <- rep(NA,nrow(object.part))
+    estimate <- rep(NA,nrow(object.part))
+    std.error <- rep(NA,nrow(object.part))
 
-    p.val <- rep(NA,nrow(object.chr))
-    meth.group1 <- rep(NA,nrow(object.chr))
-    meth.group2 <- rep(NA,nrow(object.chr))
-    meth.diff <- rep(NA,nrow(object.chr))
-    direction <- rep(NA,nrow(object.chr))
-    pseudo.R.sqrt <- rep(NA,nrow(object.chr))
-    estimate <- rep(NA,nrow(object.chr))
-    std.error <- rep(NA,nrow(object.chr))
-
-    for(j in 1:nrow(pred.meth.chr)){
-      pred.meth <- pred.meth.chr[j,]
+    for(j in 1:nrow(pred.meth.part)){
+      pred.meth <- pred.meth.part[j,]
       pred.meth[pred.meth == 0] <- min.meth
       pred.meth[pred.meth == 1] <- max.meth
       data <- cbind(pred.meth = pred.meth,
@@ -80,12 +76,10 @@
         estimate[j] <- coef
         std.error[j] <- se
       }
-      #i.o <- i.o + 1
-      #setTxtProgressBar(pb, value=i.o)
     }
     
     out <- data.frame(chr = chr,
-                      pos = start(ranges(object.chr)),
+                      pos = start(ranges(object.part)),
                       p.val,
                       meth.group1,
                       meth.group2,
@@ -97,8 +91,11 @@
   }
   
   summary.df.l <- mclapply(object.split, beta.regr, formula=formula, link=link, mc.cores=mc.cores, ...)
-  #close(pb)
   summary.df <- do.call(rbind, summary.df.l)
+  pos.object <- paste(seqnames(object), start(object), sep="_")
+  pos.summary <- paste(summary.df$chr, summary.df$pos, sep="_")
+  ind <- match(pos.object, pos.summary)
+  summary.df <- summary.df[ind,]
   summary.df$cluster.id <- elementMetadata(rowData(object))$cluster.id
   return(summary.df)
 }

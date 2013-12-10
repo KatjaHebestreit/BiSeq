@@ -26,11 +26,10 @@
 
     clus.break <- which(!pos.close)
 
-    cluster <- data.frame(start = numeric(length=length(clus.break)),
+    if(length(clus.break) > 0){
+      cluster <- data.frame(start = numeric(length=length(clus.break)),
                           end = numeric(length=length(clus.break)),
                           size = numeric(length=length(clus.break)))
-
-    if(length(clus.break) > 0){
       for(i in seq(along=clus.break)){ 
         break.prev <- clus.break[i-1]
         break.i <- clus.break[i]
@@ -42,7 +41,7 @@
           cluster$start[i] <- pos[break.prev + 1]
           cluster$end[i] <- pos[break.i]
           cluster$size[i] <- break.i - break.prev
-        }
+        } 
       }
       if(break.i != length(pos)-1){
         start <- pos[break.i + 1]
@@ -50,31 +49,35 @@
         size <- length(pos) - break.i
         cluster <- rbind(cluster, data.frame(start, end, size))
       }
-
-      cluster.keep <- cluster$size >= min.sites
-      cluster <- cluster[cluster.keep,]
-
-      if(nrow(cluster) > 0){
-        cluster.gr <- GRanges(seqnames = unique(seqnames(x)),
-                               ranges = IRanges(start=cluster$start, end=cluster$end))
-        elementMetadata(cluster.gr)$cluster.id <- paste(seqnames(cluster.gr), "_", seq(along=cluster$start), sep="")
-      
-        mtch <- findOverlaps(query = cluster.gr, subject = rowData(x))
-        mtch.m <-  as.matrix(mtch)
-        rowData.clust <- rowData(x)[mtch.m[,2],]
-        elementMetadata(rowData.clust)$cluster.id <- elementMetadata(cluster.gr)$cluster.id[mtch.m[,1]]
-        totalReads.clust <- totalReads(x)[mtch.m[,2],]
-        methReads.clust <- methReads(x)[mtch.m[,2],]
-        return( BSraw(colData = colData(x),
-                      rowData = rowData.clust,
-                      totalReads = totalReads.clust,
-                      methReads = methReads.clust)
-               )
-      }
+    }
+    if(length(clus.break) == 0 & all(pos.close)){
+      cluster <- data.frame(start = pos[1],
+                            end = rev(pos)[1],
+                            size = length(pos))
     }
 
-  }
+    cluster.keep <- cluster$size >= min.sites
+    cluster <- cluster[cluster.keep,]
 
+    if(nrow(cluster) > 0){
+      cluster.gr <- GRanges(seqnames = unique(seqnames(x)),
+                            ranges = IRanges(start=cluster$start, end=cluster$end))
+      elementMetadata(cluster.gr)$cluster.id <- paste(seqnames(cluster.gr), "_", seq(along=cluster$start), sep="")
+      
+      mtch <- findOverlaps(query = cluster.gr, subject = rowData(x))
+      mtch.m <-  as.matrix(mtch)
+      rowData.clust <- rowData(x)[mtch.m[,2],]
+      elementMetadata(rowData.clust)$cluster.id <- elementMetadata(cluster.gr)$cluster.id[mtch.m[,1]]
+      totalReads.clust <- totalReads(x)[mtch.m[,2],]
+      methReads.clust <- methReads(x)[mtch.m[,2],]
+      return( BSraw(colData = colData(x),
+                    rowData = rowData.clust,
+                    totalReads = totalReads.clust,
+                    methReads = methReads.clust)
+             )
+    }
+  }
+  
   rrbs.clust <- mclapply(rrbs.split, clus.func, max.dist= max.dist, min.sites = min.sites,
                          mc.cores = mc.cores, mc.preschedule = FALSE) # for each chromosome
   

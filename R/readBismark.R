@@ -39,10 +39,10 @@
 
   for(i in seq(along=methData)){
     mtch <- findOverlaps(fData, methData[[i]])
-    mtch.m <-  as.matrix(mtch)
-    ind <- mtch.m[, 1]
-    tReads[ind, i] <- elementMetadata(methData[[i]])$reads
-    mReads[ind, i] <- elementMetadata(methData[[i]])$methylated
+    ind1 <- queryHits(mtch)
+    ind2 <- subjectHits(mtch)
+    tReads[ind1, i] <- elementMetadata(methData[[i]])$reads[ind2]
+    mReads[ind1, i] <- elementMetadata(methData[[i]])$methylated[ind2]
   }
 
   colnames(tReads) <- rownames(colData)

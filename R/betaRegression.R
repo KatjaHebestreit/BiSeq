@@ -59,22 +59,27 @@
                                                      data=data, link = link, ...)), silent=TRUE)
                        )
       options(show.error.messages = TRUE)
-      if(class(lmodel) == "try-error"){
+      if((class(lmodel) == "try-error")){
         p.val[j] <- NA
         meth.diff[j] <- NA
       } else{
+        if(!lmodel$converged){
+	  p.val[j] <- NA
+	  meth.diff[j] <- NA
+	} else{
                                         # Test auf 0: 2 * pnorm(-abs(Estimate / Std.Error))
                                         # Test auf min.diff > 0: 2 * min(0.5, pnorm( -(abs(Estimate)-min.diff)/Std.Error, mean=-min.diff))
-        p.val[j] <- max(lmodel$coefficients$mean[2, 4], 1e-323) # should not be zero
-        baseline <- lmodel$coefficients$mean[1, 1]
-        coef <- lmodel$coefficients$mean[2, 1]
-        se <- lmodel$coefficients$mean[2, 2]
-        meth.group1[j] <- inv.link(baseline)
-        meth.group2[j] <- inv.link(baseline + coef)
-        meth.diff[j] <-  meth.group1[j] - meth.group2[j]
-        pseudo.R.sqrt[j] <- lmodel$pseudo.r.squared
-        estimate[j] <- coef
-        std.error[j] <- se
+          p.val[j] <- max(lmodel$coefficients$mean[2, 4], 1e-323) # should not be zero
+          baseline <- lmodel$coefficients$mean[1, 1]
+          coef <- lmodel$coefficients$mean[2, 1]
+          se <- lmodel$coefficients$mean[2, 2]
+          meth.group1[j] <- inv.link(baseline)
+          meth.group2[j] <- inv.link(baseline + coef)
+          meth.diff[j] <-  meth.group1[j] - meth.group2[j]
+          pseudo.R.sqrt[j] <- lmodel$pseudo.r.squared
+          estimate[j] <- coef
+          std.error[j] <- se
+        } 
       }
     }
     

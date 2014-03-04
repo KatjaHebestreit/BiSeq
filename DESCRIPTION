@@ -16,4 +16,4 @@ Description: The BiSeq package provides useful classes and functions to
         methylated regions (DMRs). The package takes already aligned BS
         data from one or multiple samples.
 License: LGPL-3
-biocViews: Genetics, Sequencing, Sequencing, MethylSeq, DNAMethylation
+biocViews: Genetics, Sequencing, MethylSeq, DNAMethylation

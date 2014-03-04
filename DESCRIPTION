@@ -1,15 +1,19 @@
 Package: BiSeq
 Type: Package
 Title: Processing and analyzing bisulfite sequencing data
-Version: 1.3.9
+Version: 1.3.10
 Date: 2014-02-19
-Author: Katja Hebestreit, Hans-Ulrich Klein 
+Author: Katja Hebestreit, Hans-Ulrich Klein
 Maintainer: Katja Hebestreit <katja.hebestreit@uni-muenster.de>
-biocViews: Genetics, Sequencing, HighThroughputSequencing, Methylseq,
-        DNAMethylation
 Depends: R (>= 2.15.2), methods, IRanges (>= 1.17.24), GenomicRanges,
         Formula
 Imports: methods, BiocGenerics, Biobase, IRanges, GenomicRanges,
         rtracklayer, parallel, betareg, lokern, Formula, globaltest
-Description: The BiSeq package provides useful classes and functions to handle and analyze targeted bisulfite sequencing (BS) data such as reduced-representation bisulfite sequencing (RRBS) data. In particular, it implements an algorithm to detect differentially methylated regions (DMRs). The package takes already aligned BS data from one or multiple samples.
+Description: The BiSeq package provides useful classes and functions to
+        handle and analyze targeted bisulfite sequencing (BS) data such
+        as reduced-representation bisulfite sequencing (RRBS) data. In
+        particular, it implements an algorithm to detect differentially
+        methylated regions (DMRs). The package takes already aligned BS
+        data from one or multiple samples.
 License: LGPL-3
+biocViews: Genetics, Sequencing, Sequencing, MethylSeq, DNAMethylation

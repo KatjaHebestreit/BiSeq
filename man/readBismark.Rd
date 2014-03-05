@@ -24,7 +24,7 @@ output files and returns a \code{BSraw} object.}
 
   \code{bismark_methylation_extractor -s --comprehensive test_sample.sam}
 
-  \code{bismark2bedGraph --counts -o CpG_context_test_sample.bedGraph
+  \code{bismark2bedGraph -o CpG_context_test_sample.bedGraph
     CpG_context_test_sample.txt}
 
   In this example, the file \code{CpG_context_test_sample.bedGraph} is then the input

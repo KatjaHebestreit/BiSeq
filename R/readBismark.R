@@ -10,7 +10,7 @@
 
     cat(paste("Processing sample ", rownames(colData)[i], " ... \n", sep=""))
 
-    bismark <- scan(files[i], skip=0, sep="\t",
+    bismark <- scan(files[i], skip=0, sep="\t", comment.char = "#",
                     what=list("character", integer(), NULL, NULL, integer(), integer()))
     
     methData[[i]] = GRanges(

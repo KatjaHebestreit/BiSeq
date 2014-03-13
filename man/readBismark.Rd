@@ -14,7 +14,8 @@ output files and returns a \code{BSraw} object.}
 
 \arguments{
   \item{files}{A \code{character} pointing to \code{bedGraph} files created by
-  Bismark's \code{methylation_extractor} and \code{bismark2bedGraph}; see Details.}
+  Bismark's \code{methylation_extractor} and \code{bismark2bedGraph}; see Details.
+  This can be a compressed file (see \link{file}).}
   \item{colData}{Samples' names plus additional sample information
     as \code{character}, \code{data.frame} or \code{DataFrame}.}
 }

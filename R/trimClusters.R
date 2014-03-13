@@ -31,7 +31,7 @@
       diffs <- abs(part$pos[loc] - part$pos[-loc])
       ind.diffs <- sapply(diffs, function(x) which(x == variogram[, "h"]))
       rho.lk <- 1 - variogram[as.character(diffs), "v.sm"]
-      rho.li <- (1 + sum(rho.lk)) / (c.i*sigma.clusters.reject[i])
+      rho.li <- (1 + sum(rho.lk, na.rm=TRUE)) / (c.i*sigma.clusters.reject[i])
       rho.li <- min(rho.li, 1) # Sometimes, smoothing of the variogram results in 0 for very small distances. To avoid correlations > 1.
       integral <- integrate(integrand, lower=z.li[loc], upper=Inf)
       p <- integral$value * 1 / (m.0/m * u.1 + (1-m.0/m) * pnorm((qnorm(u.1, lower.tail=FALSE)-mu.i[i]), lower.tail=FALSE))

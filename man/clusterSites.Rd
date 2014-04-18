@@ -51,14 +51,27 @@ mc.cores, ...)
   }
   \item{\dots}{
     Further arguments passed to the \code{filterBySharedRegions} function.
-  }
+closer than  }
 }
 \details{
-Within a \code{BSraw} object this function searches for agglomerations of CpG sites across all samples.
-In a first step the data is reduced to CpG sites covered in at least \code{round(perc.samples*ncol(object))} samples.
-In a second step regions are defined where not less than
-\code{min.sites} of these CpG sites are sufficiantly close. If argument
-\code{group} is given \code{perc.samples} or \code{no.samples} are
+
+There are three parameters that are important: \code{perc.samples}, \code{min.sites} and \code{max.dist}. 
+For example, if \code{perc.samples=0.5}, the algorithm detects all CpG sites that are covered in at least \code{50%}
+of the samples. Those CpG sites are called "frequently covered CpG sites". In the next step the algorithm 
+determines the distances between neighboured frequently covered CpG sites. 
+When they are closer than (or close as) \code{max.dist} base pairs to each other, 
+those frequently covered CpG sites and all other, less frequently covered CpG sites that are 
+in between, belong to the same cluster. In the third step, each cluster is checked 
+for the number of frequently covered CpG sites. If this number is less than \code{min.sites}, 
+the cluster is discarded.
+
+In other words:
+1) The \code{perc.samples} parameter defines which are the frequently covered CpG sites.
+2) The frequently covered CpG sites determine the boundaries of the clusters, 
+depending on their distance to each other.
+3) Clusters are discarded if they have too less frequently covered CpG sites.
+
+If argument \code{group} is given, \code{perc.samples}, or \code{no.samples}, are
 applied for all group levels.
 }
 

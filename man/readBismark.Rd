@@ -28,8 +28,8 @@ output files and returns a \code{BSraw} object.}
   \code{bismark2bedGraph -o CpG_context_test_sample.bedGraph
     CpG_context_test_sample.txt}
 
-  In this example, the file \code{CpG_context_test_sample.bedGraph} is then the input
-  file to \code{readBismark}.  
+  This will output two files, a \code{.bedGraph} and a \code{.cov} file. 
+  We will import the \code{CpG_context_test_sample.cov} using \code{readBismark}.  
 
   The \code{colData} argument should specify the sample names as
   \code{character}. Alternatively, a \code{data.frame} or
@@ -46,7 +46,7 @@ output files and returns a \code{BSraw} object.}
 \seealso{\code{\link{BSraw-class}}}
 
 \examples{
-file <- system.file("extdata", "CpG_context_test_sample.bedGraph", package = "BiSeq")
+file <- system.file("extdata", "CpG_context_test_sample.cov", package = "BiSeq")
 rrbs <- readBismark(file,
                     colData= DataFrame(row.names="sample_1"))
 }

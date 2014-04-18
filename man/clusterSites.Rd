@@ -56,8 +56,8 @@ closer than  }
 \details{
 
 There are three parameters that are important: \code{perc.samples}, \code{min.sites} and \code{max.dist}. 
-For example, if \code{perc.samples=0.5}, the algorithm detects all CpG sites that are covered in at least \code{50%}
-of the samples. Those CpG sites are called "frequently covered CpG sites". In the next step the algorithm 
+For example, if \code{perc.samples=0.5}, the algorithm detects all CpG sites that are covered in at least \code{50\%}
+of the samples. Those CpG sites are called frequently covered CpG sites. In the next step the algorithm 
 determines the distances between neighboured frequently covered CpG sites. 
 When they are closer than (or close as) \code{max.dist} base pairs to each other, 
 those frequently covered CpG sites and all other, less frequently covered CpG sites that are 
@@ -66,10 +66,10 @@ for the number of frequently covered CpG sites. If this number is less than \cod
 the cluster is discarded.
 
 In other words:
-1) The \code{perc.samples} parameter defines which are the frequently covered CpG sites.
-2) The frequently covered CpG sites determine the boundaries of the clusters, 
+1. The \code{perc.samples} parameter defines which are the frequently covered CpG sites.
+2. The frequently covered CpG sites determine the boundaries of the clusters, 
 depending on their distance to each other.
-3) Clusters are discarded if they have too less frequently covered CpG sites.
+3. Clusters are discarded if they have too less frequently covered CpG sites.
 
 If argument \code{group} is given, \code{perc.samples}, or \code{no.samples}, are
 applied for all group levels.

@@ -84,6 +84,10 @@
   ind.null <- sapply(rrbs.clust, is.null)
   rrbs.clust <- rrbs.clust[!ind.null]
 
+  if(length(rrbs.clust) == 0){
+    stop("No CpG clusters found with the given values of min.sites and max.dist.\n")  
+  }
+
   names(rrbs.clust) <- NULL
 
   rowData.clust <- do.call(c, lapply(rrbs.clust, function(x) rowData(x) ))

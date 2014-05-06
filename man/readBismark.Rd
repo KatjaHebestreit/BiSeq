@@ -13,7 +13,7 @@ output files and returns a \code{BSraw} object.}
 \usage{readBismark(files, colData)}
 
 \arguments{
-  \item{files}{A \code{character} pointing to \code{bedGraph} files created by
+  \item{files}{A \code{character} pointing to \code{cov} files created by
   Bismark's \code{methylation_extractor} and \code{bismark2bedGraph}; see Details.
   This can be a compressed file (see \link{file}).}
   \item{colData}{Samples' names plus additional sample information

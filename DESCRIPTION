@@ -1,8 +1,8 @@
 Package: BiSeq
 Type: Package
 Title: Processing and analyzing bisulfite sequencing data
-Version: 1.5.3
-Date: 2014-04-21
+Version: 1.5.4
+Date: 2014-05-06
 Author: Katja Hebestreit, Hans-Ulrich Klein
 Maintainer: Katja Hebestreit <katjah@stanford.edu>
 Depends: R (>= 2.15.2), methods, IRanges (>= 1.17.24), GenomicRanges,

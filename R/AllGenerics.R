@@ -62,7 +62,7 @@ setGeneric("limitCov", function(object, maxCov)
 setGeneric("logisticRegression", function(formula, link, object, mc.cores) 
     standardGeneric("logisticRegression"))
 
-setGeneric("makeVariogram", function(test.out, make.variogram) 
+setGeneric("makeVariogram", function(test.out, make.variogram, sample.clusters)
     standardGeneric("makeVariogram"))
 
 setGeneric("methLevel", function(object) 

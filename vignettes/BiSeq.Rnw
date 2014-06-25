@@ -338,7 +338,7 @@ Based on the variogram plot we evaluate the sill (usually near 1) of the variogr
 \begin{figure}[H]
 \begin{center}
 <<fig=TRUE,width=5,height=5>>=
-plot(vario$variogram)
+plot(vario$variogram$v)
 vario.sm <- smoothVariogram(vario, sill = 0.9)
 lines(vario.sm$variogram[,c("h", "v.sm")], 
       col = "red", lwd = 1.5)

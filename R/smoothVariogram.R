@@ -4,12 +4,12 @@
   } else {
     vario <- variogram
   }
-  pred <- lokerns(x = vario[,"h"],
-                  y = vario[,"v"],
-                  x.out=vario[,"h"],
+  pred <- lokerns(x = vario$v[,"h"],
+                  y = vario$v[,"v"],
+                  x.out=vario$h.est,
                   bandwidth = bandwidth)
   pred$est[ pred$est < 0 ] <- 0
-  vario.sm <- data.frame(vario, v.sm = pred$est)
+  vario.sm <- data.frame(h = vario$h.est, v.sm = pred$est)
   if(!missing(sill)){
     ind <- which(vario.sm[,"v.sm"] > sill)
     if(length(ind) > 0){
@@ -44,7 +44,7 @@ setMethod("smoothVariogram",
 setMethod("smoothVariogram",
           signature=c(variogram = "list", sill = "numeric", bandwidth = "missing"),
           function(variogram, sill){
-            bandwidth <- seq(10,1000, length.out=nrow(variogram$variogram))
+            bandwidth <- seq(10,1000, length.out=length(variogram$variogram$h.est))
             .smoothVariogram(variogram, sill, bandwidth)
           }
           )

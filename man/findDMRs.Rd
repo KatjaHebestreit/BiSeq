@@ -17,7 +17,7 @@ findDMRs(test.out, alpha, max.dist, diff.dir)
 \arguments{
   \item{test.out}{An object returned by \code{betaRegression}.}
   \item{alpha}{OPTIONAL. A DMR contains CpG sites with P values smaller or equal than \code{alpha}.}
-  \item{max.dist}{Numeric. The maximum distance between two P values smaller than 
+  \item{max.dist}{Numeric. The maximum distance between two P values smaller than
 \code{alpha} in a DMR. Should be the same as \code{grid.dist} in
 \code{predictMeth}.}
  \item{diff.dir}{Logical. Should DMRs be seperated if the direction of methylation
@@ -47,7 +47,7 @@ findDMRs(test.out, alpha, max.dist, diff.dir)
 ## Variogram under Null hypothesis (for resampled data):
 data(vario)
 
-plot(vario$variogram)
+plot(vario$variogram$v)
 vario.sm <- smoothVariogram(vario, sill=0.9)
 
 # auxiliary object to get the pValsList for the test

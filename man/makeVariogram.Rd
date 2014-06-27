@@ -1,9 +1,11 @@
 \name{makeVariogram}
 \alias{makeVariogram}
-\alias{makeVariogram,data.frame,logical,numeric-method}
-\alias{makeVariogram,data.frame,missing,missing-method}
-\alias{makeVariogram,data.frame,missing,numeric-method}
-\alias{makeVariogram,data.frame,logical,missing-method}
+\alias{makeVariogram,data.frame,logical,numeric,numeric-method}
+\alias{makeVariogram,data.frame,missing,missing,missing-method}
+\alias{makeVariogram,data.frame,missing,numeric,numeric-method}
+\alias{makeVariogram,data.frame,logical,missing,numeric-method}
+\alias{makeVariogram,data.frame,logical,numeric,missing-method}
+\alias{makeVariogram,data.frame,logical,missing,missing-method}
 
 \title{
 Variogram estimator.
@@ -12,7 +14,7 @@ Variogram estimator.
 A function which estimates the variogram of the z-scores in the given data frame.
 }
 \usage{
-makeVariogram(test.out, make.variogram, sample.clusters)
+makeVariogram(test.out, make.variogram, sample.clusters, max.dist)
 }
 \arguments{
   \item{test.out}{
@@ -23,7 +25,13 @@ makeVariogram(test.out, make.variogram, sample.clusters)
     significantly. Default is \code{NULL}, and all data is used to
     estimate the variogram. If set to \code{numeric}, the variogram will
     be estimated on the basis of the data of randomly selected
-    \code{sample.clusters} only.}
+    \code{sample.clusters} only. Especially useful if there are many clusters.}
+  \item{max.dist}{Can speed up variogram estimation
+    significantly. The variogram is estimated for distances until this
+    threshold. Default is 500 base pairs, since the variogram usually
+    does not change for distances larger than 100 base pairs,
+    because methylation of CpG sites further away are not correlated
+    anymore. Especially useful if there are large clusters.}
 }
 \details{
 For each CpG site the z-score is determined by \code{qnorm}(1 -
@@ -31,7 +39,7 @@ For each CpG site the z-score is determined by \code{qnorm}(1 -
 and \eqn{l} within one cluster is estimated robustly by
 \deqn{
 2 \hat{\gamma}(h) = [median{(Z_{k}-Z_{l})^2: (s_{k}, s_{l}) \in
-  N(h)}] / .455 
+  N(h)}] / .455
   }.
 }
 \value{
@@ -63,5 +71,5 @@ data(betaResults)
 
 vario <- makeVariogram(betaResults)
 
-plot(vario$variogram)
+plot(vario$variogram$v)
 }

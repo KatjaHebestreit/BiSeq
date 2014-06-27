@@ -1,4 +1,4 @@
-.variogram <- function(geo.data, positions){
+.variogram <- function(geo.data, positions, max.dist){
   positions.sample <- as.integer(rownames(geo.data))
   ind.ord <- order(positions.sample)
   geo.data.n <- geo.data[ind.ord,,drop=FALSE]
@@ -8,9 +8,13 @@
   positions.sample.n <- positions.sample.n[!all.na]
   d.sample <- as.matrix(dist(cbind(positions.sample.n)))
   d.sample[upper.tri(d.sample, diag=TRUE)] <- NA
+  # h: all distances in sample clusters; varigram is estimated for h
   h <- sort(unique(as.vector(d.sample)))
-
+  if(is.numeric(max.dist)){
+      h <- h[ h <= max.dist ]
+  }
   if(identical(positions, positions.sample)){
+      # h.est: used for smooth.variogram; all distances that are in the data; where should variogram be predicted?
     h.est <- h
   } else {
     ind.ord <- order(positions)

@@ -25,7 +25,7 @@ A \code{numeric}. The sill (upper bound) of the variogram. See Details.
 }
   \item{bandwidth}{
 A numeric vector of same length as the variogram (number of
-rows). Default: \code{seq(10,1000, length.out=nrow(variogram))}. See Details. 
+rows). Default: \code{seq(10,1000, length.out=nrow(variogram))}. See Details.
 }
 }
 \details{
@@ -56,11 +56,11 @@ Katja Hebestreit
 data(vario)
 
 # Find out the sill (this is more obvious for larger data sets):
-plot(vario$variogram)
+plot(vario$variogram$v)
 
 vario.sm <- smoothVariogram(vario, sill = 0.9)
 
-plot(vario$variogram)
+plot(vario$variogram$v)
 lines(vario.sm$variogram[,c("h", "v.sm")],
 col = "red")
 

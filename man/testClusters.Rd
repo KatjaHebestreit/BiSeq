@@ -53,7 +53,7 @@ Katja Hebestreit
 ## Variogram under Null hypothesis (for resampled data):
 data(vario)
 
-plot(vario$variogram)
+plot(vario$variogram$v)
 vario.sm <- smoothVariogram(vario, sill=0.9)
 
 # auxiliary object to get the pValsList for the test

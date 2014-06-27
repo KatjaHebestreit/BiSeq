@@ -1,4 +1,4 @@
-.makeVariogram <- function(test.out, make.variogram, sample.clusters){
+.makeVariogram <- function(test.out, make.variogram, sample.clusters, max.dist){
   test.out$z.score <- qnorm(test.out$p.val, lower.tail=FALSE)
   ind <- which(abs(test.out$z.score) == Inf)
   test.out$z.score[ind] <- NA
@@ -6,14 +6,7 @@
   cl.p.list <- split(cl.p, cl.p$cluster.id, drop=TRUE)
   rm(cl.p)
   if(is.numeric(sample.clusters)){
-      # largest cluster should always be included, that the variogram is estimated for the largest distance
-      cluster.sizes <- sapply(cl.p.list, function(x){
-          max(x$pos) - min(x$pos)
-      })
-      ind.largest <- which(cluster.sizes == max(cluster.sizes))[1]
-      cl.p.list.no.largest <- cl.p.list
-      cl.p.list.no.largest[[ind.largest]] <- NULL
-      ind.sample <- sample(seq(along=cl.p.list.no.largest), size = sample.clusters-1, replace = FALSE)
+      ind.sample <- sample(seq(along=cl.p.list), size = sample.clusters, replace = FALSE)
   }
   # positions within clusters:
   pos.new <- lapply(cl.p.list,
@@ -31,9 +24,7 @@
     cl.p.list.sample <- cl.p.list
   }
   if(is.numeric(sample.clusters)){
-    cl.p.list.no.largest <- cl.p.list
-    cl.p.list.no.largest[[ind.largest]] <- NULL
-    cl.p.list.sample <- c(cl.p.list.no.largest[ind.sample], cl.p.list[ind.largest])
+    cl.p.list.sample <- cl.p.list[ind.sample]
   }
   if(make.variogram == TRUE){
     data.list <- lapply(cl.p.list.sample,
@@ -43,8 +34,8 @@
                           return(y)
                         }
                         )
-    positions.sample <- sort(unique(do.call("c", sapply(cl.p.list.sample, function(x) x$pos.new))))
-    positions <- sort(unique(do.call("c", sapply(cl.p.list, function(x) x$pos.new))))
+    positions.sample <- sort(unique(do.call("c", lapply(cl.p.list.sample, function(x) x$pos.new))))
+    positions <- sort(unique(do.call("c", lapply(cl.p.list, function(x) x$pos.new))))
     geo.data <- matrix(numeric(), ncol=length(cl.p.list.sample), nrow=length(positions.sample))
     rownames(geo.data) <- positions.sample
     for(i in seq(along=data.list)){
@@ -53,7 +44,7 @@
     }
       # geo.data: z-score for each position relative to sample clusters
       # positions: all positions relative to all clusters
-    vario <- .variogram(geo.data, positions)
+    vario <- .variogram(geo.data, positions, max.dist)
     vario$v <- vario$v[!is.na(vario$v[,"v"]),]
     return(list(variogram=vario, pValsList=cl.p.list))
   } else{
@@ -63,24 +54,36 @@
 
 
 setMethod("makeVariogram",
-          signature=c(test.out = "data.frame", make.variogram = "logical", sample.clusters = "numeric"),
+          signature=c(test.out = "data.frame", make.variogram = "logical", sample.clusters = "numeric", max.dist = "numeric"),
           .makeVariogram)
 
 
 setMethod("makeVariogram",
-          signature=c(test.out = "data.frame", make.variogram = "missing", sample.clusters = "missing"),
+          signature=c(test.out = "data.frame", make.variogram = "missing", sample.clusters = "missing", max.dist = "missing"),
           function(test.out) {
-            .makeVariogram(test.out, make.variogram=TRUE, sample.clusters = NULL)
+            .makeVariogram(test.out, make.variogram=TRUE, sample.clusters = NULL, max.dist = 500)
           })
 
 setMethod("makeVariogram",
-          signature=c(test.out = "data.frame", make.variogram = "missing", sample.clusters = "numeric"),
-          function(test.out, sample.clusters) {
-            .makeVariogram(test.out, make.variogram=TRUE, sample.clusters = sample.clusters)
+          signature=c(test.out = "data.frame", make.variogram = "missing", sample.clusters = "numeric", max.dist = "numeric"),
+          function(test.out, sample.clusters, max.dist) {
+            .makeVariogram(test.out, make.variogram=TRUE, sample.clusters = sample.clusters, max.dist = max.dist)
           })
 
 setMethod("makeVariogram",
-          signature=c(test.out = "data.frame", make.variogram = "logical", sample.clusters = "missing"),
+          signature=c(test.out = "data.frame", make.variogram = "logical", sample.clusters = "missing", max.dist = "missing"),
           function(test.out, make.variogram) {
-            .makeVariogram(test.out, make.variogram=make.variogram, sample.clusters = NULL)
+            .makeVariogram(test.out, make.variogram=make.variogram, sample.clusters = NULL, max.dist = 500)
+          })
+
+setMethod("makeVariogram",
+          signature=c(test.out = "data.frame", make.variogram = "logical", sample.clusters = "missing", max.dist = "numeric"),
+          function(test.out, make.variogram, max.dist) {
+            .makeVariogram(test.out, make.variogram=make.variogram, sample.clusters = NULL, max.dist = max.dist)
+          })
+
+setMethod("makeVariogram",
+          signature=c(test.out = "data.frame", make.variogram = "logical", sample.clusters = "numeric", max.dist = "missing"),
+          function(test.out, make.variogram, sample.clusters) {
+            .makeVariogram(test.out, make.variogram=make.variogram, sample.clusters = sample.clusters, max.dist = 500)
           })

@@ -15,15 +15,15 @@
     cpgs = ranges(rowData(objectChr))
 
     ov = as.data.frame(as.matrix(findOverlaps(ranges(regions[ind, ]), cpgs)))
-    m = split.data.frame(ov, ov$query)
+    m = split.data.frame(ov, ov$queryHits)
     
     if (length(m) > 0) {
       for (s in colnames(objectChr)) {
         totalReads[ind[as.integer(names(m))], s] = as.integer(sapply(m, function(x) {
-          return(sum(totalReads(objectChr)[x$subject, s]))
+          return(sum(totalReads(objectChr)[x$subjectHits, s]))
         }))
         methReads[ind[as.integer(names(m))], s] = as.integer(sapply(m, function(x) {
-          return(sum(methReads(objectChr)[x$subject, s]))
+          return(sum(methReads(objectChr)[x$subjectHits, s]))
         }))
       }
     }

@@ -1,6 +1,6 @@
 .rawToRel <- function(object){
   object.rel <- BSrel(colData = colData(object),
-                      rowData = rowData(object),
+                      rowRanges = rowRanges(object),
                       methLevel = methReads(object) / totalReads(object)
                       )
   return(object.rel)

@@ -12,7 +12,7 @@
   for (n in levels(seqnames(object))) {
     ind = which(seqnames(regions) == n)
     objectChr = object[as.character(seqnames(object)) == n,  ]
-    cpgs = ranges(rowData(objectChr))
+    cpgs = ranges(rowRanges(objectChr))
 
     ov = as.data.frame(as.matrix(findOverlaps(ranges(regions[ind, ]), cpgs)))
     m = split.data.frame(ov, ov$queryHits)
@@ -30,7 +30,7 @@
   }
 
   rrbs = BSraw(colData=colData(object), 
-               rowData=regions,
+               rowRanges=regions,
                totalReads=totalReads, 
                methReads=methReads)
 
@@ -56,7 +56,7 @@
   for (n in levels(seqnames(object))) {
     ind = which(seqnames(regions) == n)
     objectChr = object[as.character(seqnames(object)) == n,  ]
-    cpgs = ranges(rowData(objectChr))
+    cpgs = ranges(rowRanges(objectChr))
 
     ov = as.data.frame(as.matrix(findOverlaps(ranges(regions[ind, ]), cpgs)))
     m = split.data.frame(ov, ov$query)
@@ -71,7 +71,7 @@
   }
 
   rrbs = BSrel(colData=colData(object), 
-               rowData=regions,
+               rowRanges=regions,
                methLevel=methLevel)
 
   if (outputAll == FALSE) {

@@ -30,7 +30,7 @@ a given genomic region.}
   given object is of class \code{\link{BSrel-class}}, the mean relative methylation
   of all CpGs within a region is assign to that region.
 
-  The \code{rowData} slot of the returned object is the given object
+  The \code{rowRanges} slot of the returned object is the given object
   \code{regions} with all columns preserved.
 }
 

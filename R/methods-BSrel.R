@@ -1,7 +1,7 @@
 setMethod("BSrel", signature(methLevel="matrix",
-                             rowData="GRanges"),
+                             rowRanges="GRanges"),
           function(methLevel,
-                   rowData,
+                   rowRanges,
                    colData = DataFrame(row.names=colnames(methLevel)),
                    exptData = SimpleList(),
                    ...)
@@ -11,7 +11,7 @@ setMethod("BSrel", signature(methLevel="matrix",
                           methLevel = methLevel))
             new("BSrel",
                 assays = ssla,
-                rowData = rowData,
+                rowRanges = rowRanges,
                 colData = colData,
                 exptData = exptData)
           })
@@ -36,19 +36,19 @@ setMethod("combine", signature(x ="BSrel", y = "BSrel"),
               stop("The BSrel objects to combine should not have samples in common!")
             }
             colData.new <- rbind(colData(x), colData(y))
-            rowData.new <- sort(unique(c(rowData(x), rowData(y))))
-            ind.match.x <- match(rowData.new, rowData(x))
-            ind.match.y <- match(rowData.new, rowData(y))
-            nr <- length(rowData.new)
+            rowRanges.new <- sort(unique(c(rowRanges(x), rowRanges(y))))
+            ind.match.x <- match(rowRanges.new, rowRanges(x))
+            ind.match.y <- match(rowRanges.new, rowRanges(y))
+            nr <- length(rowRanges.new)
             nc <- nrow(colData.new)
             methLevel.new <- matrix(numeric(length = nr*nc),
                                     ncol=nc,
                                     nrow=nr,
-                                    dimnames=list(names(rowData.new), rownames(colData.new)))
+                                    dimnames=list(names(rowRanges.new), rownames(colData.new)))
             methLevel.new[,] <- cbind(methLevel(x)[ind.match.x,], methLevel(y)[ind.match.y,])
             methLevel.new[is.na(methLevel.new)] <- NaN
             z <- BSrel(colData = colData.new,
-                       rowData = rowData.new,
+                       rowRanges = rowRanges.new,
                        methLevel = methLevel.new
                        )
             return(z)

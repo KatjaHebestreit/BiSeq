@@ -22,7 +22,7 @@
 \section{Objects from the Class}{
   Objects can be created by calls of the form
   \code{BSrel(exptData = SimpleList(),
-    rowData,
+    rowRanges,
     colData = DataFrame(row.names=colnames(methLevel)),
     methLevel,
     ...)}.
@@ -34,7 +34,7 @@
   \describe{
     \item{\code{exptData}:}{An optional \code{SimpleList} of arbitrary
       content describing the overall experiment.}
-    \item{\code{rowData}:}{Object of class \code{"GRanges"}
+    \item{\code{rowRanges}:}{Object of class \code{"GRanges"}
       containing the genome positions of CpG-sites covered by bisulfite
       sequencing.}
     \item{\code{colData}:}{Object of class \code{"DataFrame"}
@@ -42,7 +42,7 @@
     \item{\code{assays}:}{Object of class \code{SimpleList} of a
       matrix, named \code{methLevel} containing the methylation levels
       (between 0 and 1) per CpG site. The rows represent the CpG sites
-      in \code{rowData} and the columns represent the samples in \code{colData}.}
+      in \code{rowRanges} and the columns represent the samples in \code{colData}.}
   }
 }
 \section{Extends}{
@@ -73,13 +73,13 @@ showClass("BSrel")
 
 ## How to create a BSrel object by hand:
 exptData <- SimpleList(Sequencer = "Sequencer", Year = "2013")
-rowData <- GRanges(seqnames = "chr1",
+rowRanges <- GRanges(seqnames = "chr1",
                   ranges = IRanges(start = c(1,2,3), end = c(1,2,3)))
 colData <- DataFrame(group = c("cancer", "control"),
                      row.names = c("sample_1", "sample_2"))
 methLevel <- matrix(c(rep(0.5, 3), rep(1, 3)), ncol = 2)
 BSrel(exptData = exptData,
-      rowData = rowData,
+      rowRanges = rowRanges,
       colData = colData,
       methLevel = methLevel)
 

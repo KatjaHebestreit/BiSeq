@@ -6,8 +6,8 @@
   if(minDiff > 1){
     stop("minDiff should be smaller than 1.")
   }
-  meth.diff <- data.frame(chr = as.character(seqnames(rowData(object))),
-                          pos = start(ranges(rowData(object))),
+  meth.diff <- data.frame(chr = as.character(seqnames(rowRanges(object))),
+                          pos = start(ranges(rowRanges(object))),
                           meth.group1 = methLevel(object)[,sample1],
                           meth.group2 = methLevel(object)[,sample2]
                           )

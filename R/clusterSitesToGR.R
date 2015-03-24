@@ -1,6 +1,6 @@
 .clusterSitesToGR <- function(object){
 
-  fData.split <- split(rowData(object), seqnames(rowData(object)), drop=TRUE)
+  fData.split <- split(rowRanges(object), seqnames(rowRanges(object)), drop=TRUE)
   clusters <- lapply(fData.split, function(x){
     cluster.ids <- unique(elementMetadata(x)$cluster.id)
     df <- data.frame(chr = unique(seqnames(x)),

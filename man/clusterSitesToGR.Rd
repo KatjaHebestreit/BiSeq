@@ -9,14 +9,14 @@ A function to obtain a \code{GRanges} object of CpG clusters from  \code{BSraw} 
 \description{
 This function allows to get the start and end positions of CpG clusters
 from a \code{BSraw} or \code{BSrel} object, when there is a \code{cluster.id}
-column in the \code{rowData} slot.
+column in the \code{rowRanges} slot.
 }
 \usage{
 clusterSitesToGR(object)
 }
 \arguments{
   \item{object}{A \code{BSraw} or \code{BSrel} object with a
-    \code{cluster.id} column in the \code{rowData} slot. Usually the
+    \code{cluster.id} column in the \code{rowRanges} slot. Usually the
     output of \code{clusterSites}.}
 }
 

@@ -25,7 +25,7 @@
 
   relPos <- numeric()
   methData <- numeric()
-  matchMatrix <- as.matrix(findOverlaps(regions, rowData(object)))
+  matchMatrix <- as.matrix(findOverlaps(regions, rowRanges(object)))
   if (nrow(matchMatrix) == 0) {
     stop("No CpG sites within the given regions.")
   }
@@ -39,7 +39,7 @@
     setTxtProgressBar(pb, value=progBar)
     progBar <- progBar + 1
     ind = matchMatrix[matchMatrix[, 1] == i, 2]
-    relPos = c(relPos, start(rowData(object)[ind]) - start(regions[i]) + 1)
+    relPos = c(relPos, start(rowRanges(object)[ind]) - start(regions[i]) + 1)
     methData = rbind(methData, methLevel(object)[ind, ])
   }
   methData = split(as.data.frame(methData), factor(relPos))

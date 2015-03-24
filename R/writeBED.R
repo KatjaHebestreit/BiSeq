@@ -13,7 +13,7 @@
     ind.cov <- totalReads(object.i) != 0
     if (sum(ind.cov) > 1) {
       object.i <- object.i[ind.cov, ]
-      bed <- rowData(object.i)
+      bed <- rowRanges(object.i)
       elementMetadata(bed)$score <- methReads(object.i) / totalReads(object.i)
       elementMetadata(bed)$name <- totalReads(object.i)
       m <- colFunc(elementMetadata(bed)$score) / 255
@@ -43,7 +43,7 @@
     ind.cov <- !is.na(methLevel(object.i))
     if (sum(ind.cov) > 1) {
       object.i <- object.i[ind.cov, ]
-      bed <- rowData(object.i)
+      bed <- rowRanges(object.i)
       elementMetadata(bed)$score <- methLevel(object.i)
       elementMetadata(bed)$name <- "\"\""
       m <- colFunc(elementMetadata(bed)$score) / 255

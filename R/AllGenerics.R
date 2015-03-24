@@ -9,22 +9,22 @@ setGeneric("binomLikelihoodSmooth", function(pred.pos, pos, m, n, h)
 
 setGeneric("BSraw", function(methReads,
                              totalReads,
-                             rowData,
+                             rowRanges,
                              colData = DataFrame(row.names=colnames(methReads)),
                              exptData = SimpleList(),
                              ...
                              )
            standardGeneric("BSraw"),
-           signature=c("methReads", "totalReads", "rowData"))
+           signature=c("methReads", "totalReads", "rowRanges"))
 
 setGeneric("BSrel", function(methLevel,
-                             rowData,
+                             rowRanges,
                              colData = DataFrame(row.names=colnames(methLevel)),
                              exptData = SimpleList(),
                              ...
                              )
            standardGeneric("BSrel"),
-           signature=c("methLevel", "rowData"))
+           signature=c("methLevel", "rowRanges"))
 
 setGeneric("clusterSites", function(object, groups, perc.samples, min.sites, max.dist, mc.cores, ...)
   standardGeneric("clusterSites"))

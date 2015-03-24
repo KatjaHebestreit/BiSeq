@@ -35,7 +35,7 @@
   object.split <- split(object, f = rep(1:mc.cores, length.out = nrow(object)))
 
   beta.regr <- function(object.part, formula, link, ...){
-    chr <- as.character(seqnames(rowData(object.part)))
+    chr <- as.character(seqnames(rowRanges(object.part)))
     pred.meth.part <- methLevel(object.part)
 
     p.val <- rep(NA,nrow(object.part))
@@ -101,7 +101,7 @@
   pos.summary <- paste(summary.df$chr, summary.df$pos, sep="_")
   ind <- match(pos.object, pos.summary)
   summary.df <- summary.df[ind,]
-  summary.df$cluster.id <- elementMetadata(rowData(object))$cluster.id
+  summary.df$cluster.id <- elementMetadata(rowRanges(object))$cluster.id
   return(summary.df)
 }
 

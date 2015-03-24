@@ -3,8 +3,8 @@
   strand(object) <- "*"
   object <- sort(object)
   
-  rowData.new <- GRanges()
-  seqlevels(rowData.new) <- seqlevels(rowData(object))
+  rowRanges.new <- GRanges()
+  seqlevels(rowRanges.new) <- seqlevels(rowRanges(object))
   methLevels <- matrix(nrow=0, ncol=ncol(object))
   colnames(methLevels) <- colnames(object)
 
@@ -42,7 +42,7 @@
       }
       f.help <- GRanges(seqnames=clus.chr, ranges=IRanges(start=clus.grid, end=clus.grid))
       elementMetadata(f.help)$cluster.id <- unique(elementMetadata(object.part)$cluster.id)
-      seqlevels(f.help) <- seqlevels(rowData(object))
+      seqlevels(f.help) <- seqlevels(rowRanges(object))
 
       return(list(f.help, rrbs.predict))
     }
@@ -58,7 +58,7 @@
       }
     }
     out2 <- do.call("rbind", lapply(out.list, function(x) x[[2]]))
-    rowData.new <- c(rowData.new, out1)
+    rowRanges.new <- c(rowRanges.new, out1)
     methLevels <- rbind(methLevels, out2)
 
     i.chr <- i.chr + l.chr[chr]
@@ -67,10 +67,10 @@
   close(pb)
   
   rownames(methLevels) <- 1:nrow(methLevels)
-  names(rowData.new) <- 1:length(rowData.new)
+  names(rowRanges.new) <- 1:length(rowRanges.new)
   
   predictedMeth <- BSrel(colData=colData(object), 
-                         rowData=rowData.new, 
+                         rowRanges=rowRanges.new, 
                          methLevel=methLevels)
   
   return(predictedMeth)

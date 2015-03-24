@@ -52,7 +52,7 @@
 
   rrbs = BSraw(
     colData = colData,
-    rowData = fData,
+    rowRanges = fData,
     totalReads = tReads,
     methReads = mReads)
   

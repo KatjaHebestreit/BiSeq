@@ -8,7 +8,7 @@
   strand(object) <- "*"
   object <- sort(object)
   
-  rowData.new <- new("GRanges")
+  rowRanges.new <- new("GRanges")
   totalReads.new <- matrix(nrow=0, ncol=ncol(object))
   colnames(totalReads.new) <- colnames(object)
   methReads.new <- matrix(nrow=0, ncol=ncol(object))
@@ -64,14 +64,14 @@
                             ranges = IRanges(start=cluster$start, end=cluster$end))
       elementMetadata(cluster.gr)$cluster.id <- paste(seqnames(cluster.gr), "_", seq(along=cluster$start), sep="")
       
-      mtch <- findOverlaps(query = cluster.gr, subject = rowData(x))
+      mtch <- findOverlaps(query = cluster.gr, subject = rowRanges(x))
       mtch.m <-  as.matrix(mtch)
-      rowData.clust <- rowData(x)[mtch.m[,2],]
-      elementMetadata(rowData.clust)$cluster.id <- elementMetadata(cluster.gr)$cluster.id[mtch.m[,1]]
+      rowRanges.clust <- rowRanges(x)[mtch.m[,2],]
+      elementMetadata(rowRanges.clust)$cluster.id <- elementMetadata(cluster.gr)$cluster.id[mtch.m[,1]]
       totalReads.clust <- totalReads(x)[mtch.m[,2],]
       methReads.clust <- methReads(x)[mtch.m[,2],]
       return( BSraw(colData = colData(x),
-                    rowData = rowData.clust,
+                    rowRanges = rowRanges.clust,
                     totalReads = totalReads.clust,
                     methReads = methReads.clust)
              )
@@ -90,17 +90,17 @@
 
   names(rrbs.clust) <- NULL
 
-  rowData.clust <- do.call(c, lapply(rrbs.clust, function(x) rowData(x) ))
+  rowRanges.clust <- do.call(c, lapply(rrbs.clust, function(x) rowRanges(x) ))
 
   totalReads.clust <- do.call(rbind, lapply(rrbs.clust, function(x) totalReads(x) ))
 
   methReads.clust <- do.call(rbind, lapply(rrbs.clust, function(x) methReads(x) ))
 
-  rownames(totalReads.clust) <- names(rowData.clust)
-  rownames(methReads.clust) <- names(rowData.clust)
+  rownames(totalReads.clust) <- names(rowRanges.clust)
+  rownames(methReads.clust) <- names(rowRanges.clust)
 
   object.clust <- BSraw(colData=colData(object),
-                        rowData=rowData.clust,
+                        rowRanges=rowRanges.clust,
                         totalReads=totalReads.clust,
                         methReads=methReads.clust)
   return(object.clust)

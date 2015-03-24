@@ -3,7 +3,7 @@
   object.raw <- subsetByOverlaps( object.raw, region )
   object.rel <- subsetByOverlaps( object.rel, region )
 
-  f.raw <- start(ranges(rowData(object.raw)))
+  f.raw <- start(ranges(rowRanges(object.raw)))
   t <- totalReads(object.raw)
 
   ind.cov <-  t[,1] > 0 
@@ -57,7 +57,7 @@
 
   # one curve for each CpG cluster
   object.rel.split <- split(object.rel, elementMetadata(object.rel)$cluster.id)
-  pos.rel.split <- lapply(object.rel.split, function(x) start(ranges(rowData(x))))
+  pos.rel.split <- lapply(object.rel.split, function(x) start(ranges(rowRanges(x))))
 
   for(i in seq(along=pos.rel.split)) {
     lines(pos.rel.split[[i]],

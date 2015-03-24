@@ -72,7 +72,7 @@ A \Rclass{BSraw} object consists of four slots:
 
 \begin{enumerate}
 \item A \Rclass{SimpleList} of arbitrary content describing the overall experiment, accessible with \Rfunction{exptData}.
-\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowData}. 
+\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowRanges}. 
 \item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}. 
 \item An \Rcode{assays} slot containing a \Rclass{SimpleList} of two matrices, one containing the numbers of reads (accessible with \Rfunction{totalReads}) and the other the numbers of methylated reads (accessible with \Rfunction{methReads}).
 \end{enumerate}
@@ -80,14 +80,14 @@ A \Rclass{BSraw} object consists of four slots:
 A new \Rclass{BSraw} object can also be created by hand:
 <<results=hide>>=
 exptData <- SimpleList(Sequencer = "Instrument", Year = "2013")
-rowData <- GRanges(seqnames = "chr1",
+rowRanges <- GRanges(seqnames = "chr1",
                   ranges = IRanges(start = c(1,2,3), end = c(1,2,3)))
 colData <- DataFrame(group = c("cancer", "control"),
                      row.names = c("sample_1", "sample_2"))
 totalReads <- matrix(c(rep(10L, 3), rep(5L, 3)), ncol = 2)
 methReads <- matrix(c(rep(5L, 3), rep(5L, 3)), ncol = 2)
 BSraw(exptData = exptData,
-      rowData = rowData,
+      rowRanges = rowRanges,
       colData = colData,
       totalReads = totalReads,
       methReads = methReads)
@@ -105,7 +105,7 @@ colData(rrbs)
 @
 The first CpG sites on chromosome 1 which were covered:
 <<>>=
-head(rowData(rrbs))
+head(rowRanges(rrbs))
 @
 The coverage of the first CpG sites per sample:
 <<>>=
@@ -123,7 +123,7 @@ A \Rclass{BSrel} object consists of four slots:
 
 \begin{enumerate}
 \item A \Rclass{SimpleList} of arbitrary content describing the overall experiment, accessible with \Rfunction{exptData}.
-\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowData}. 
+\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowRanges}. 
 \item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}. 
 \item An \Rcode{assays} slot containing a \Rclass{SimpleList} of a matrix with the relative methylation levels (between 0 and 1), accessible with \Rfunction{methLevel}.
 \end{enumerate}
@@ -132,7 +132,7 @@ A new \Rclass{BSraw} object can be created by:
 <<results=hide>>=
 methLevel <- matrix(c(rep(0.5, 3), rep(1, 3)), ncol = 2)
 BSrel(exptData = exptData,
-      rowData = rowData,
+      rowRanges = rowRanges,
       colData = colData,
       methLevel = methLevel)
 @
@@ -176,7 +176,7 @@ sort(rrbs)
 \Rclass{BSraw} and \Rclass{BSrel} objects can be combined and splitted:
 <<results=hide>>=
 combine(rrbs[1:10,1:2], rrbs[1:1000, 3:10])
-split(rowData(rrbs), 
+split(rowRanges(rrbs), 
       f = as.factor(as.character(seqnames(rrbs))))
 @
 
@@ -225,7 +225,7 @@ rrbs.clust.unlim <- clusterSites(object = rrbs.small,
 @
 \Rcode{rrbs.clust.unlim} is a again \Rclass{BSraw} object but restricted to CpG sites within CpG clusters. Each CpG site is assigned to a cluster:
 <<>>=
-head(rowData(rrbs.clust.unlim))
+head(rowRanges(rrbs.clust.unlim))
 @
 The underlying CpG clusters can also be converted to a \Rclass{GRanges} object with the start and end positions:
 <<>>=

@@ -60,12 +60,12 @@
 
   }
 
-  rowData.new <- rowData(object)[ind]
+  rowRanges.new <- rowRanges(object)[ind]
   totalReads.new <- totalReads(object)[ind,]
   methReads.new <- methReads(object)[ind,]
   object.new <- BSraw(
                     colData = colData(object),
-                    rowData = rowData.new,
+                    rowRanges = rowRanges.new,
                     totalReads = totalReads.new,
                     methReads = methReads.new
                     )
@@ -135,11 +135,11 @@
 
   }
 
-  rowData.new <- rowData(object)[ind]
+  rowRanges.new <- rowRanges(object)[ind]
   methLevel.new <- methLevel(object)[ind,]
   object.new <- BSrel(
                     colData = colData(object),
-                    rowData = rowData.new,
+                    rowRanges = rowRanges.new,
                     methLevel = methLevel.new
                     )
  

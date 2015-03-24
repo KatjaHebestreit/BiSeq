@@ -77,7 +77,7 @@ applied for all group levels.
 
 \value{
 A \code{BSraw} object reduced to CpG sites within CpG cluster regions. A \code{cluster.id} in the 
-\code{elementMetadata} slot of \code{rowData} assigns cluster memberships per CpG site.
+\code{elementMetadata} slot of \code{rowRanges} assigns cluster memberships per CpG site.
 }
 
 \author{

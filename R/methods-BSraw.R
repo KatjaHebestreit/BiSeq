@@ -1,9 +1,9 @@
 setMethod("BSraw", signature(methReads="matrix",
                              totalReads="matrix",
-                             rowData="GRanges"),
+                             rowRanges="GRanges"),
           function(methReads,
                    totalReads,
-                   rowData,
+                   rowRanges,
                    colData = DataFrame(row.names=colnames(methReads)),
                    exptData = SimpleList(),
                    ...)
@@ -14,7 +14,7 @@ setMethod("BSraw", signature(methReads="matrix",
                           methReads = methReads))
             new("BSraw",
                 assays = ssla,
-                rowData = rowData,
+                rowRanges = rowRanges,
                 colData = colData,
                 exptData = exptData)
           })
@@ -51,25 +51,25 @@ setMethod("combine", signature(x ="BSraw", y="BSraw"),
               stop("The BSraw objects to combine should not have samples in common!")
             }
             colData.new <- rbind(colData(x), colData(y))
-            rowData.new <- sort(unique(c(rowData(x), rowData(y))))
-            ind.match.x <- findOverlaps(rowData.new, rowData(x), select="first")
-            ind.match.y <- findOverlaps(rowData.new, rowData(y), select="first")
-            nr <- length(rowData.new)
+            rowRanges.new <- sort(unique(c(rowRanges(x), rowRanges(y))))
+            ind.match.x <- findOverlaps(rowRanges.new, rowRanges(x), select="first")
+            ind.match.y <- findOverlaps(rowRanges.new, rowRanges(y), select="first")
+            nr <- length(rowRanges.new)
             nc <- nrow(colData.new)
             methReads.new <- matrix(integer(length = nr*nc),
                                     ncol=nc,
                                     nrow=nr,
-                                    dimnames=list(names(rowData.new), rownames(colData.new)))
+                                    dimnames=list(names(rowRanges.new), rownames(colData.new)))
             methReads.new[,] <- cbind(methReads(x)[ind.match.x,], methReads(y)[ind.match.y,])
             methReads.new[is.na(methReads.new)] <- 0L
             totalReads.new <- matrix(integer(length = nr*nc),
                                     ncol=nc,
                                     nrow=nr,
-                                    dimnames=list(names(rowData.new), rownames(colData.new)))
+                                    dimnames=list(names(rowRanges.new), rownames(colData.new)))
             totalReads.new[,] <- cbind(totalReads(x)[ind.match.x,], totalReads(y)[ind.match.y,])
             totalReads.new[is.na(totalReads.new)] <- 0L
             z <- BSraw(colData = colData.new,
-                       rowData = rowData.new,
+                       rowRanges = rowRanges.new,
                        methReads = methReads.new,
                        totalReads = totalReads.new
                        )

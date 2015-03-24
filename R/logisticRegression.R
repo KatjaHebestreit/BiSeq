@@ -32,7 +32,7 @@
   object.split <- split(object, f = as.factor(seqnames(object)), drop = TRUE)
 
   logistic.regr <- function(object.chr, formula){
-    chr <- as.character(seqnames(rowData(object.chr))[1])
+    chr <- as.character(seqnames(rowRanges(object.chr))[1])
     pred.meth.chr <- methLevel(object.chr)
 
     p.val <- rep(NA,nrow(object.chr))
@@ -82,7 +82,7 @@
   summary.df.l <- mclapply(object.split, logistic.regr, formula=formula,
                            mc.cores = mc.cores)
   summary.df <- do.call(rbind, summary.df.l)
-  summary.df$cluster.id <- elementMetadata(rowData(object))$cluster.id
+  summary.df$cluster.id <- elementMetadata(rowRanges(object))$cluster.id
   return(summary.df)
 }
 

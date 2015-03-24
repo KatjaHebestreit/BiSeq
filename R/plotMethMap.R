@@ -6,13 +6,13 @@
 
   strand(object) <- "*"
   object <- sort(object)
-  ind <- overlapsAny(rowData(object), region)
+  ind <- overlapsAny(rowRanges(object), region)
   if (sum(ind) == 0) {
     stop("No data to plot within the given region/samples.")
   }
 
   md <- methLevel(object)[ind, ]
-  pos <- start(rowData(object))[ind]
+  pos <- start(rowRanges(object))[ind]
   rownames(md) <- as.character(pos)
   md <- t(md)
   ind <- !apply(is.na(md), 2, all)

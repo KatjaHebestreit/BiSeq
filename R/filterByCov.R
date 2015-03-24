@@ -3,14 +3,14 @@
   if(global){
     freq.cov <- apply(totalReads(object), 1, function(x) sum(x >= minCov))
     ind <- freq.cov == ncol(object)
-    rowData.new <- rowData(object)[ind]
+    rowRanges.new <- rowRanges(object)[ind]
     totalReads.new <- totalReads(object)[ind,]
     methReads.new <- methReads(object)[ind,]
   }else{
     ind <- totalReads(object) >= minCov
     ind.out <- apply(ind, 1, function(x) sum(x) == 0)
     ind.dim <- which(!ind, arr.ind=TRUE)
-    rowData.new <- rowData(object)[!ind.out]
+    rowRanges.new <- rowRanges(object)[!ind.out]
     totalReads.new <- totalReads(object)
     totalReads.new[ind.dim] <- 0L
     totalReads.new <- totalReads.new[!ind.out,]
@@ -20,7 +20,7 @@
   }
 
   return(BSraw(colData=colData(object), 
-               rowData=rowData.new, 
+               rowRanges=rowRanges.new, 
                totalReads=totalReads.new, 
                methReads=methReads.new))
 }

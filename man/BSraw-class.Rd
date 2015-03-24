@@ -23,7 +23,7 @@
 \section{Objects from the Class}{
   Objects can be created by calls of the form
   \code{BSraw(exptData = SimpleList(),
-    rowData,
+    rowRanges,
     colData = DataFrame(row.names=colnames(methReads)),
     methReads,
     totalReads,
@@ -36,7 +36,7 @@
   \describe{
     \item{\code{exptData}:}{An optional \code{SimpleList} of arbitrary
       content describing the overall experiment.}
-    \item{\code{rowData}:}{Object of class \code{"GRanges"}
+    \item{\code{rowRanges}:}{Object of class \code{"GRanges"}
       containing the genome positions of CpG-sites covered by bisulfite
       sequencing.}
     \item{\code{colData}:}{Object of class \code{"DataFrame"}
@@ -44,7 +44,7 @@
     \item{\code{assays}:}{Object of class \code{SimpleList} of two
       matrices, named \code{totalReads} and \code{methReads}. The matrix
       \code{totalReads} contains the number of reads spanning a
-      CpG-site. The rows represent the CpG sites in \code{rowData} and
+      CpG-site. The rows represent the CpG sites in \code{rowRanges} and
       the columns represent the samples in \code{colData}. The matrix
       \code{methReads} contains the number of methylated reads spanning
       a CpG-site.}
@@ -81,14 +81,14 @@ showClass("BSraw")
 
 ## How to create a BSraw object by hand:
 exptData <- SimpleList(Sequencer = "Sequencer", Year = "2013")
-rowData <- GRanges(seqnames = "chr1",
+rowRanges <- GRanges(seqnames = "chr1",
                   ranges = IRanges(start = c(1,2,3), end = c(1,2,3)))
 colData <- DataFrame(group = c("cancer", "control"),
                      row.names = c("sample_1", "sample_2"))
 totalReads <- matrix(c(rep(10L, 3), rep(5L, 3)), ncol = 2)
 methReads <- matrix(c(rep(5L, 3), rep(5L, 3)), ncol = 2)
 BSraw(exptData = exptData,
-      rowData = rowData,
+      rowRanges = rowRanges,
       colData = colData,
       totalReads = totalReads,
       methReads = methReads)

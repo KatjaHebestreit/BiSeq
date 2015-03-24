@@ -3,6 +3,7 @@ import(BiocGenerics)
 import(Biobase)
 import(S4Vectors)
 import(IRanges)
+import(GenomeInfoDb)
 import(GenomicRanges)
 
 importFrom(parallel, mclapply)

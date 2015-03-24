@@ -1,15 +1,15 @@
 .annotateGRanges <- function(object, regions, name, regionInfo){
 
   regions <- unique(regions)
-  MetaCol <- ncol(elementMetadata(object)) + 1
+  MetaCol <- ncol(mcols(object)) + 1
   if(missing(regionInfo)){
     ind <- overlapsAny(object, regions)
-    elementMetadata(object)[, MetaCol] <- FALSE
-    elementMetadata(object)[, MetaCol][ind] <- TRUE
-    colnames(elementMetadata(object))[MetaCol] <- name
+    mcols(object)[, MetaCol] <- FALSE
+    mcols(object)[, MetaCol][ind] <- TRUE
+    colnames(mcols(object))[MetaCol] <- name
   }else{
-    if(is(elementMetadata(regions)[,regionInfo], "factor")){
-      elementMetadata(regions)[, regionInfo] <- as.character(elementMetadata(regions)[, regionInfo])
+    if(is(mcols(regions)[,regionInfo], "factor")){
+      mcols(regions)[, regionInfo] <- as.character(mcols(regions)[, regionInfo])
     }
     overl <- findOverlaps(query=object, subject=regions)
     matches <- as.data.frame(as.matrix(overl))
@@ -21,7 +21,7 @@
       ind.many <- as.numeric(as.character(tab$Var1[ind]))
       matches.one <- matches[!is.element(matches$query, ind.many), ]
 
-      ids <- elementMetadata(regions)[, regionInfo]
+      ids <- mcols(regions)[, regionInfo]
       
       if(is(ids, "CompressedCharacterList")){
         ids.l <- sapply(ids, length)
@@ -47,8 +47,8 @@
       }
     }
     
-    elementMetadata(object)[, MetaCol] <- helper
-    colnames(elementMetadata(object))[MetaCol] <- name
+    mcols(object)[, MetaCol] <- helper
+    colnames(mcols(object))[MetaCol] <- name
   }
   return(object)
 }

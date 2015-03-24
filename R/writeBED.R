@@ -14,10 +14,10 @@
     if (sum(ind.cov) > 1) {
       object.i <- object.i[ind.cov, ]
       bed <- rowRanges(object.i)
-      elementMetadata(bed)$score <- methReads(object.i) / totalReads(object.i)
-      elementMetadata(bed)$name <- totalReads(object.i)
-      m <- colFunc(elementMetadata(bed)$score) / 255
-      elementMetadata(bed)$itemRgb <- rgb(m[,1], m[,2], m[,3])
+      mcols(bed)$score <- methReads(object.i) / totalReads(object.i)
+      mcols(bed)$name <- totalReads(object.i)
+      m <- colFunc(mcols(bed)$score) / 255
+      mcols(bed)$itemRgb <- rgb(m[,1], m[,2], m[,3])
 
       bed <- as(bed, "UCSCData")
       bed@trackLine@name <- paste("\"", name[i], "\"", sep="")
@@ -44,10 +44,10 @@
     if (sum(ind.cov) > 1) {
       object.i <- object.i[ind.cov, ]
       bed <- rowRanges(object.i)
-      elementMetadata(bed)$score <- methLevel(object.i)
-      elementMetadata(bed)$name <- "\"\""
-      m <- colFunc(elementMetadata(bed)$score) / 255
-      elementMetadata(bed)$itemRgb <- rgb(m[,1], m[,2], m[,3])
+      mcols(bed)$score <- methLevel(object.i)
+      mcols(bed)$name <- "\"\""
+      m <- colFunc(mcols(bed)$score) / 255
+      mcols(bed)$itemRgb <- rgb(m[,1], m[,2], m[,3])
 
       bed <- as(bed, "UCSCData")
       bed@trackLine@name <- paste("\"", name[i], "\"", sep="")

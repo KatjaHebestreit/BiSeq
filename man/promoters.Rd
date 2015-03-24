@@ -12,8 +12,8 @@ A \code{GRanges} of promoters of the human genome
 \usage{data(promoters)}
 \format{
 A \code{GRanges} object with the chromosomes, start and end positions of
-defined human promoter regions together with an accesion number in the
-\code{elementMetadata} slot.
+defined human promoter regions together with an accesion number stored in a
+metadata column.
 }
 \examples{
 data(promoters)

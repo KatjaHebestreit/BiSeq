@@ -31,7 +31,7 @@
       fData <- unique(c(fData, methData[[i]]))
     }
   }
-  elementMetadata(fData) <- NULL
+  mcols(fData) <- NULL
   names(fData) <- as.character(1:length(fData))
 
   tReads <- matrix(integer(length = length(fData) * length(methData)), nrow=length(fData))
@@ -41,8 +41,8 @@
     mtch <- findOverlaps(fData, methData[[i]])
     ind1 <- queryHits(mtch)
     ind2 <- subjectHits(mtch)
-    tReads[ind1, i] <- elementMetadata(methData[[i]])$reads[ind2]
-    mReads[ind1, i] <- elementMetadata(methData[[i]])$methylated[ind2]
+    tReads[ind1, i] <- mcols(methData[[i]])$reads[ind2]
+    mReads[ind1, i] <- mcols(methData[[i]])$methylated[ind2]
   }
 
   colnames(tReads) <- rownames(colData)

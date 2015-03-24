@@ -22,12 +22,12 @@ A \code{GRanges}.
 A \code{GRanges}.
 }
   \item{name}{
-A string specifying the name of the \code{elementMetadata}
+A string specifying the name of the metadata
 column with the overlapping information to be added to
 \code{object}. Usually the type of the \code{regions} object, e.g. 'Promoter'.
 }
   \item{regionInfo}{
-OPTIONAL: A string or integer specifying the \code{elementMetadata}
+OPTIONAL: A string or integer specifying the metadata column
 column of \code{regions} object containing the identifiers,
 e.g. entrez gene IDs of the promoters. If not specified, the genomic
 locations of \code{object} are labeled as
@@ -42,7 +42,7 @@ are seperated by ','.
 }
 \value{
 A \code{GRanges} object similar to \code{object} containing an
-additional \code{elementMetadata} column with the overlapping information.
+additional metadata column with the overlapping information.
 }
 
 

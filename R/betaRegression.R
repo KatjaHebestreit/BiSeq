@@ -101,7 +101,7 @@
   pos.summary <- paste(summary.df$chr, summary.df$pos, sep="_")
   ind <- match(pos.object, pos.summary)
   summary.df <- summary.df[ind,]
-  summary.df$cluster.id <- elementMetadata(rowRanges(object))$cluster.id
+  summary.df$cluster.id <- mcols(rowRanges(object))$cluster.id
   return(summary.df)
 }
 

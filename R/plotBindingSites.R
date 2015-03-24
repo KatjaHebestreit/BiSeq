@@ -1,7 +1,7 @@
 .plotBindingSites <- function(object, regions, width, groups, quantiles, bandwidth, ...) {
 
   if (missing(width)) {
-    width = max(IRanges:::width(regions))
+    width = max(IRanges::width(regions))
   }
   if (missing(groups)) {
     groups = factor(rep(1, ncol(object)))

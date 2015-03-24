@@ -34,9 +34,10 @@
   \describe{
     \item{\code{exptData}:}{An optional \code{SimpleList} of arbitrary
       content describing the overall experiment.}
-    \item{\code{rowRanges}:}{Object of class \code{"GRanges"}
+    \item{\code{rowData}:}{Object of class \code{"GRanges"}
       containing the genome positions of CpG-sites covered by bisulfite
-      sequencing.}
+      sequencing. WARNING: The accessor for this slot is \code{rowRanges}, 
+      not \code{rowData}!}
     \item{\code{colData}:}{Object of class \code{"DataFrame"}
       containing information on variable values of the samples.}
     \item{\code{assays}:}{Object of class \code{SimpleList} of a

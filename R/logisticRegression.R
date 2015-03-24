@@ -82,7 +82,7 @@
   summary.df.l <- mclapply(object.split, logistic.regr, formula=formula,
                            mc.cores = mc.cores)
   summary.df <- do.call(rbind, summary.df.l)
-  summary.df$cluster.id <- elementMetadata(rowRanges(object))$cluster.id
+  summary.df$cluster.id <- mcols(rowRanges(object))$cluster.id
   return(summary.df)
 }
 

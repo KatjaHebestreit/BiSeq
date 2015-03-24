@@ -62,12 +62,12 @@
     if(nrow(cluster) > 0){
       cluster.gr <- GRanges(seqnames = unique(seqnames(x)),
                             ranges = IRanges(start=cluster$start, end=cluster$end))
-      elementMetadata(cluster.gr)$cluster.id <- paste(seqnames(cluster.gr), "_", seq(along=cluster$start), sep="")
+      mcols(cluster.gr)$cluster.id <- paste(seqnames(cluster.gr), "_", seq(along=cluster$start), sep="")
       
       mtch <- findOverlaps(query = cluster.gr, subject = rowRanges(x))
       mtch.m <-  as.matrix(mtch)
       rowRanges.clust <- rowRanges(x)[mtch.m[,2],]
-      elementMetadata(rowRanges.clust)$cluster.id <- elementMetadata(cluster.gr)$cluster.id[mtch.m[,1]]
+      mcols(rowRanges.clust)$cluster.id <- mcols(cluster.gr)$cluster.id[mtch.m[,1]]
       totalReads.clust <- totalReads(x)[mtch.m[,2],]
       methReads.clust <- methReads(x)[mtch.m[,2],]
       return( BSraw(colData = colData(x),

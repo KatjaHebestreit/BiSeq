@@ -56,7 +56,7 @@
   do.call(plot, args)
 
   # one curve for each CpG cluster
-  object.rel.split <- split(object.rel, elementMetadata(object.rel)$cluster.id)
+  object.rel.split <- split(object.rel, mcols(object.rel)$cluster.id)
   pos.rel.split <- lapply(object.rel.split, function(x) start(ranges(rowRanges(x))))
 
   for(i in seq(along=pos.rel.split)) {

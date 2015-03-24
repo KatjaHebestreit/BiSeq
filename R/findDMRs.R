@@ -109,10 +109,10 @@
     y <- GRanges(seqnames = x$chr,
                  ranges = IRanges(start = x$start, end = x$end)
                  )
-    elementMetadata(y)$median.p <- x$median.p
-    elementMetadata(y)$median.meth.group1 <- x$median.meth.group1
-    elementMetadata(y)$median.meth.group2 <- x$median.meth.group2
-    elementMetadata(y)$median.meth.diff <- x$median.meth.diff
+    mcols(y)$median.p <- x$median.p
+    mcols(y)$median.meth.group1 <- x$median.meth.group1
+    mcols(y)$median.meth.group2 <- x$median.meth.group2
+    mcols(y)$median.meth.diff <- x$median.meth.diff
     return(y)
   })
   

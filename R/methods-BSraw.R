@@ -14,7 +14,7 @@ setMethod("BSraw", signature(methReads="matrix",
                           methReads = methReads))
             new("BSraw",
                 assays = ssla,
-                rowRanges = rowRanges,
+                rowData = rowRanges,
                 colData = colData,
                 exptData = exptData)
           })

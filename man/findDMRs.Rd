@@ -26,7 +26,7 @@ findDMRs(test.out, alpha, max.dist, diff.dir)
 }
 
 
-\value{A \code{GRanges} object storing the start and end positions of the DMRs with information in \code{elementMetadata}:
+\value{A \code{GRanges} object storing the start and end positions of the DMRs with information in metadata columns:
   \item{median.p }{median of P values}
   \item{median.meth.group1 }{median of modeled methylation level of group1.}
   \item{median.meth.group1 }{median of modeled methylation level of group2.}

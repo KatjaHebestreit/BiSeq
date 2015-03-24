@@ -7,8 +7,9 @@ Author: Katja Hebestreit, Hans-Ulrich Klein
 Maintainer: Katja Hebestreit <katjah@stanford.edu>
 Depends: R (>= 2.15.2), methods, S4Vectors, IRanges (>= 1.17.24),
 	GenomicRanges, Formula
-Imports: methods, BiocGenerics, Biobase, S4Vectors, IRanges, GenomicRanges,
-        rtracklayer, parallel, betareg, lokern, Formula, globaltest
+Imports: methods, BiocGenerics, Biobase, S4Vectors, IRanges, GenomeInfoDb,
+        GenomicRanges, rtracklayer, parallel, betareg, lokern, Formula,
+        globaltest
 Description: The BiSeq package provides useful classes and functions to
         handle and analyze targeted bisulfite sequencing (BS) data such
         as reduced-representation bisulfite sequencing (RRBS) data. In

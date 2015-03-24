@@ -11,7 +11,7 @@ setMethod("BSrel", signature(methLevel="matrix",
                           methLevel = methLevel))
             new("BSrel",
                 assays = ssla,
-                rowRanges = rowRanges,
+                rowData = rowRanges,
                 colData = colData,
                 exptData = exptData)
           })

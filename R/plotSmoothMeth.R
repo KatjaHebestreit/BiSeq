@@ -28,9 +28,9 @@
   }
   n <- ncol(mLevel)
 
-  if(is.element("cluster.id", colnames(elementMetadata(object.rel)))){
+  if(is.element("cluster.id", colnames(mcols(object.rel)))){
   # one curve for each CpG cluster
-    object.split <- split(object.rel, elementMetadata(object.rel)$cluster.id)
+    object.split <- split(object.rel, mcols(object.rel)$cluster.id)
     pos.rel.split <- lapply(object.split, function(x) start(x))
   } else {
     object.split <- list(object.rel)

@@ -17,7 +17,7 @@
     object.chr <- object[ind.chr, ]
 
     # split object.chr by clusters:
-    object.split <- split(object.chr, f = as.factor(elementMetadata(object.chr)$cluster.id), drop=TRUE)
+    object.split <- split(object.chr, f = as.factor(mcols(object.chr)$cluster.id), drop=TRUE)
     
     predict.cluster <- function(object.part, h=h, grid.dist=grid.dist){ # for each cluster
       
@@ -41,7 +41,7 @@
                                                    h = h)
       }
       f.help <- GRanges(seqnames=clus.chr, ranges=IRanges(start=clus.grid, end=clus.grid))
-      elementMetadata(f.help)$cluster.id <- unique(elementMetadata(object.part)$cluster.id)
+      mcols(f.help)$cluster.id <- unique(mcols(object.part)$cluster.id)
       seqlevels(f.help) <- seqlevels(rowRanges(object))
 
       return(list(f.help, rrbs.predict))

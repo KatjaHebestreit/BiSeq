@@ -15,8 +15,8 @@ predictMeth(object, h, grid.dist, mc.cores)
 }
 
 \arguments{
-  \item{object}{A \code{BSraw} with a \code{cluster.id} column in the
-    \code{elementMetadata}, usually the output of \code{clusterSites}.}
+  \item{object}{A \code{BSraw} with a \code{cluster.id} metadata column on the
+    \code{rowRanges}, usually the output of \code{clusterSites}.}
   \item{h}{Bandwidth in base pairs. Large values produce a smoother
   curve. Default is 80.}
   \item{grid.dist}{OPTIONAL. If \code{numeric}, than methylation values are

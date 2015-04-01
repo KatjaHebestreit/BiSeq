@@ -24,9 +24,9 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 
-\title{BiSeq: A package for analyzing targeted bisulfite sequencing data}
+\Title{Biseq: A package for analyzing targeted bisulfite sequencing data}
 \author{Katja Hebestreit, Hans-Ulrich Klein}
-\date{April 11, 2013}
+\date{March 31, 2015}
 
 \maketitle
 
@@ -51,7 +51,7 @@ As sample data we use a small part of a recently published data set, see \cite{S
 
 \subsection{Import of Bismark's methylation output files}
 \label{import}
-Bismark \cite{Krueger2011} a bisulfite read mapper and methylation caller. \Rpackage{BiSeq} allows the import of Bismark output files. 
+Bismark \cite{Krueger2011} a bisulfite read mapper and methylation caller. \Rpackage{BiSeq} allows the import of Bismark output files.
 <<preliminaries>>=
 library(BiSeq)
 @
@@ -72,8 +72,8 @@ A \Rclass{BSraw} object consists of four slots:
 
 \begin{enumerate}
 \item A \Rclass{SimpleList} of arbitrary content describing the overall experiment, accessible with \Rfunction{exptData}.
-\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowRanges}. 
-\item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}. 
+\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowRanges}.
+\item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}.
 \item An \Rcode{assays} slot containing a \Rclass{SimpleList} of two matrices, one containing the numbers of reads (accessible with \Rfunction{totalReads}) and the other the numbers of methylated reads (accessible with \Rfunction{methReads}).
 \end{enumerate}
 
@@ -123,8 +123,8 @@ A \Rclass{BSrel} object consists of four slots:
 
 \begin{enumerate}
 \item A \Rclass{SimpleList} of arbitrary content describing the overall experiment, accessible with \Rfunction{exptData}.
-\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowRanges}. 
-\item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}. 
+\item A \Rclass{GRanges} of the positions of CpG-sites covered by BS in at least one sample, accessible with \Rfunction{rowRanges}.
+\item A \Rclass{DataFrame} of samples and the values of variables measured on those samples, accessible with \Rfunction{colData}.
 \item An \Rcode{assays} slot containing a \Rclass{SimpleList} of a matrix with the relative methylation levels (between 0 and 1), accessible with \Rfunction{methLevel}.
 \end{enumerate}
 
@@ -161,8 +161,8 @@ rrbs[ind.chr1,]
 @
 We can also subset by overlaps with a \Rclass{GRanges} object:
 <<>>=
-region <- GRanges(seqnames="chr1", 
-                  ranges=IRanges(start = 875200, 
+region <- GRanges(seqnames="chr1",
+                  ranges=IRanges(start = 875200,
                                  end = 875500))
 @
 <<results=hide>>=
@@ -176,7 +176,7 @@ sort(rrbs)
 \Rclass{BSraw} and \Rclass{BSrel} objects can be combined and splitted:
 <<results=hide>>=
 combine(rrbs[1:10,1:2], rrbs[1:1000, 3:10])
-split(rowRanges(rrbs), 
+split(rowRanges(rrbs),
       f = as.factor(as.character(seqnames(rrbs))))
 @
 
@@ -217,10 +217,10 @@ In order to smooth the methylation data we first have to detect CpG clusters (re
 We perform the analysis on a subset of our data to save time:
 <<>>=
 rrbs.small <- rrbs[1:1000,]
-rrbs.clust.unlim <- clusterSites(object = rrbs.small, 
-                                 groups = colData(rrbs)$group, 
-                                 perc.samples = 4/5, 
-                                 min.sites = 20, 
+rrbs.clust.unlim <- clusterSites(object = rrbs.small,
+                                 groups = colData(rrbs)$group,
+                                 perc.samples = 4/5,
+                                 min.sites = 20,
                                  max.dist = 100)
 @
 \Rcode{rrbs.clust.unlim} is a again \Rclass{BSraw} object but restricted to CpG sites within CpG clusters. Each CpG site is assigned to a cluster:
@@ -260,7 +260,7 @@ The effect of the smoothing step can be shown with the \Rfunction{plotMeth} func
 \begin{figure}[H]
 \begin{center}
 <<fig=TRUE,width=5,height=5>>=
-plotMeth(object.raw = rrbs[,6], 
+plotMeth(object.raw = rrbs[,6],
          object.rel = predictedMeth[,6],
          region = region,
          lwd.lines = 2,
@@ -293,9 +293,9 @@ plot(mean.control,
 To detect the CpG sites where the DNA methylation differs between APL and control samples we model the methylation within a beta regression with the group as explanatory variable and use the Wald test to test if there is a group effect:
 <<results=hide>>=
 ## To shorten the run time set mc.cores, if possible!
-betaResults <- betaRegression(formula = ~group, 
+betaResults <- betaRegression(formula = ~group,
                               link = "probit",
-                              object = predictedMeth, 
+                              object = predictedMeth,
                               type = "BR")
 @
 <<>>=
@@ -307,19 +307,19 @@ data(betaResults)
 head(betaResults)
 @
 
-By setting \Rcode{type = "BR"} the maximum likelihood with bias reduction is called. This is especially useful, when the sample size is small, see \cite{Gruen2012}. The mean of the response (methylation) is linked to a linear predictor described by \Rcode{\~{} x1 + x2} using a link function while the precision parameter is assumed to be constant. Sometimes the variance of DNA methylation is dependent on the group factor, e.g. the methylation variance in cancer samples is often higher than in normal samples. These additional regressors can be linked to the precision parameter within the formula of type \Rcode{\~{} x1 + x2 | y1 + y2} where the regressors in the two parts can be overlapping, see the documentation in the \Rpackage{betareg} package. 
+By setting \Rcode{type = "BR"} the maximum likelihood with bias reduction is called. This is especially useful, when the sample size is small, see \cite{Gruen2012}. The mean of the response (methylation) is linked to a linear predictor described by \Rcode{\~{} x1 + x2} using a link function while the precision parameter is assumed to be constant. Sometimes the variance of DNA methylation is dependent on the group factor, e.g. the methylation variance in cancer samples is often higher than in normal samples. These additional regressors can be linked to the precision parameter within the formula of type \Rcode{\~{} x1 + x2 | y1 + y2} where the regressors in the two parts can be overlapping, see the documentation in the \Rpackage{betareg} package.
 
 \subsection{Test CpG clusters for differential methylation}
 The aim is to detect CpG clusters containing at least one differentially methylated location. To do so the P values $p$ from the Wald tests are transformed to $Z$ scores: $z = \Phi^{-1}(1-p)$, which are normally distributed under Null hypothesis (no group effect). As cluster test statistic a standardized $Z$ score average is used. To estimate the standard deviation of the $Z$ scores we have to estimate the correlation and hence the variogram of methylation between two CpG sites within a cluster. The estimation of the standard deviation requires that the distribution of the $Z$ scores follows a standard normal distribution. However, if methylation in both groups differs for many CpG sites the density distribution of P values shows a peak near 0. To ensure that the P values are roughly uniformly distributed to get a variance of the $Z$ scores that is Gaussian with variance 1 we recommend to estimate the variogram (and hence the correlation of $Z$ scores) under the null hypothesis. To do so we model the beta regression again for resampled data:
 <<results=hide>>=
 ## Both resampled groups should have the same number of
-## cancer and control samples:  
+## cancer and control samples:
 predictedMethNull <- predictedMeth[,c(1:4, 6:9)]
-colData(predictedMethNull)$group.null <- rep(c(1,2), 4)     
+colData(predictedMethNull)$group.null <- rep(c(1,2), 4)
 ## To shorten the run time, please set mc.cores, if possible!
-betaResultsNull <- betaRegression(formula = ~group.null, 
+betaResultsNull <- betaRegression(formula = ~group.null,
                                   link = "probit",
-                                  object = predictedMethNull, 
+                                  object = predictedMethNull,
                                   type="BR")
 @
 <<>>=
@@ -340,7 +340,7 @@ Based on the variogram plot we evaluate the sill (usually near 1) of the variogr
 <<fig=TRUE,width=5,height=5>>=
 plot(vario$variogram$v)
 vario.sm <- smoothVariogram(vario, sill = 0.9)
-lines(vario.sm$variogram[,c("h", "v.sm")], 
+lines(vario.sm$variogram[,c("h", "v.sm")],
       col = "red", lwd = 1.5)
 grid()
 @
@@ -367,7 +367,7 @@ locCor <- estLocCor(vario.sm)
 @
 We test each CpG cluster for the presence of at least one differentially methylated location at $q$ what can be interpreted as the size-weighted FDR on clusters:
 <<>>=
-clusters.rej <- testClusters(locCor, 
+clusters.rej <- testClusters(locCor,
                              FDR.cluster = 0.1)
 clusters.rej$clusters.reject
 @
@@ -377,7 +377,7 @@ clusters.rej$clusters.reject
 
 We then trim the rejected CpG clusters that is to remove the not differentially methylated CpG sites at $q_1$ what can be interpreted as the location-wise FDR:
 <<>>=
-clusters.trimmed <- trimClusters(clusters.rej, 
+clusters.trimmed <- trimClusters(clusters.rej,
                                  FDR.loc = 0.05)
 head(clusters.trimmed)
 @
@@ -387,8 +387,8 @@ head(clusters.trimmed)
 
 We can now define the boundaries of DMRs as rejected CpG sites within which rejected CpG sites solely are located. Within the DMRs the distance between neighbored rejected CpG sites should not exceed \Rfunarg{max.dist} base pairs (usually the same as for \Rfunarg{max.dist} in \Rfunction{clusterSites}), otherwise, the DMR is splitted. DMRs are also splitted if the methylation difference switches from positive to negative, or vice versa, if \Rcode{diff.dir = TRUE}. That way we ensure that within a DMR all CpG sites are hypermethylated, and hypomethylated respectively.
 <<>>=
-DMRs <- findDMRs(clusters.trimmed, 
-                 max.dist = 100, 
+DMRs <- findDMRs(clusters.trimmed,
+                 max.dist = 100,
                  diff.dir = TRUE)
 DMRs
 @
@@ -409,13 +409,70 @@ sum(overlapsAny(DMRs.2,DMRs))
 @
 
 \newpage
+\section{Testing of predefined genomic regions}
+There are sometimes biological and/or technical reasons for testing predefined
+genomic regions for differential methylation. For example, one might
+want to test for methylation differences in known CpG islands
+or promototer regions. In this scenario
+it is not of interest which exact CpG sites are differentially
+methylated. The methods of choice for testing genomic regions are
+BiSeq and the global test (which we also implemented in this package)
+\cite{Klein2015}.
+Here, we want to give a short guidance on how to use the
+\Rpackage{BiSeq} package in order to test predefined genomic regions
+using BiSeq and the global test.
+
+\subsection{Testing predefined genomic regions using the BiSeq method}
+Testing predefined genomic regions using the BiSeq method is mostly
+equivalent to the procedure shown above for DMR detection. Instead of the definition of CpG clusters (which we
+described in section 4.1) we will just add
+the region information to the CpG sites in the \Rclass{BSraw}
+object. In this example, we assume that we want to test gene promoters for
+differential methylation.
+
+We filter out all CpG sites of the \Rclass{BSraw} object that
+do not fall into any promoter region. The remaining CpG sites get the
+promoter identifier in a column named \Rcode{cluster.id}:
+<<<>>=
+data(promoters)
+data(rrbs)
+rrbs.red <- subsetByOverlaps(rrbs, promoters)
+ov <- findOverlaps(rrbs.red, promoters)
+rowRanges(rrbs.red)$cluster.id[ov@queryHits] <- promoters$acc_no[ov@subjectHits]
+head(rowRanges(rrbs.red))
+@
+From here on we can use the same pipeline as usual: Smoothing and
+modeling (sections 4.2 and 4.3) of the DNA methylation data and
+subsequent testing of the regions (section 4.4).
+
+
+\subsection{Testing predefined genomic regions using the Global Test}
+Goeman et al. \cite{Goeman2006} proposed a score test for testing high dimensional
+alternatives. The approach is implemented in the R/Bioconductor package \Rpackage{globaltest}.
+The \Rpackage{BiSeq} package offers a wrapper function to apply Goeman's Global Test directly to RRBS
+data given as a \Rclass{BSrel} object:
+<<<>>=
+data(promoters)
+data(rrbs)
+rrbs <- rawToRel(rrbs)
+promoters <- promoters[overlapsAny(promoters, rrbs)]
+gt <- globalTest(group~1,
+                 rrbs,
+                 subsets = promoters)
+head(gt)
+@
+If the parameter \Rcode{subsets} is not given, the null hypothesis is
+that no CpG site (rather than region) is associated with the given response variable.
+
+
+\newpage
 \section{Further data processing}
 The \Rfunction{plotMethMap} function is helpful to evaluate DMRs graphically. Via \Rcode{zlim = c(0,1)} that is passed to the \Rfunction{heatmap} function we ensure that green stands for a relative methalytion of 0 and red stands for a relative methylation of 1:
 \begin{figure}[H]
 \begin{center}
 <<fig=TRUE,width=5,height=4>>=
 rowCols <- c("magenta", "blue")[as.numeric(colData(predictedMeth)$group)]
-plotMethMap(predictedMeth, 
+plotMethMap(predictedMeth,
             region = DMRs[3],
             groups = colData(predictedMeth)$group,
             intervals = FALSE,
@@ -434,7 +491,7 @@ plotSmoothMeth(object.rel = predictedMeth,
                region = DMRs[3],
                groups = colData(predictedMeth)$group,
                group.average = FALSE,
-               col = c("magenta", "blue"), 
+               col = c("magenta", "blue"),
                lwd = 1.5)
 legend("topright",
        legend=levels(colData(predictedMeth)$group),

@@ -24,7 +24,7 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 
-\Title{Biseq: A package for analyzing targeted bisulfite sequencing data}
+\title{Biseq: A package for analyzing targeted bisulfite sequencing data}
 \author{Katja Hebestreit, Hans-Ulrich Klein}
 \date{March 31, 2015}
 

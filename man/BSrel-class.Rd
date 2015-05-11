@@ -15,13 +15,13 @@
 }
 \description{
   The \code{BSrel} class is derived from
-  \code{SummarizedExperiment} and contains a \code{SimpleList} of one
+  \code{RangedSummarizedExperiment} and contains a \code{SimpleList} of one
   matrix named \code{methLevel} as \code{assays}.
 }
 
 \section{Objects from the Class}{
   Objects can be created by calls of the form
-  \code{BSrel(exptData = SimpleList(),
+  \code{BSrel(metadata = list(),
     rowRanges,
     colData = DataFrame(row.names=colnames(methLevel)),
     methLevel,
@@ -32,12 +32,12 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{exptData}:}{An optional \code{SimpleList} of arbitrary
+    \item{\code{metadata}:}{An optional \code{list} of arbitrary
       content describing the overall experiment.}
-    \item{\code{rowData}:}{Object of class \code{"GRanges"}
+    \item{\code{rowRanges}:}{Object of class \code{"GRanges"}
       containing the genome positions of CpG-sites covered by bisulfite
       sequencing. WARNING: The accessor for this slot is \code{rowRanges}, 
-      not \code{rowData}!}
+      not \code{rowRanges}!}
     \item{\code{colData}:}{Object of class \code{"DataFrame"}
       containing information on variable values of the samples.}
     \item{\code{assays}:}{Object of class \code{SimpleList} of a
@@ -47,7 +47,7 @@
   }
 }
 \section{Extends}{
-Class \code{"\linkS4class{SummarizedExperiment}"}, directly.
+Class \code{"\linkS4class{RangedSummarizedExperiment}"}, directly.
 }
 \section{Methods}{
   \describe{
@@ -67,19 +67,19 @@ Katja Hebestreit
 }
 
 \seealso{
-\code{SummarizedExperiment}, \code{\link{BSraw-class}}, \code{\link{readBismark}}
+\link{RangedSummarizedExperiment}, \code{\link{BSraw-class}}, \code{\link{readBismark}}
 }
 \examples{
 showClass("BSrel")
 
 ## How to create a BSrel object by hand:
-exptData <- SimpleList(Sequencer = "Sequencer", Year = "2013")
+metadata <- list(Sequencer = "Sequencer", Year = "2013")
 rowRanges <- GRanges(seqnames = "chr1",
                   ranges = IRanges(start = c(1,2,3), end = c(1,2,3)))
 colData <- DataFrame(group = c("cancer", "control"),
                      row.names = c("sample_1", "sample_2"))
 methLevel <- matrix(c(rep(0.5, 3), rep(1, 3)), ncol = 2)
-BSrel(exptData = exptData,
+BSrel(metadata = metadata,
       rowRanges = rowRanges,
       colData = colData,
       methLevel = methLevel)

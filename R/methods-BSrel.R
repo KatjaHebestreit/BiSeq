@@ -3,7 +3,7 @@ setMethod("BSrel", signature(methLevel="matrix",
           function(methLevel,
                    rowRanges,
                    colData = DataFrame(row.names=colnames(methLevel)),
-                   exptData = SimpleList(),
+                   metadata = list(),
                    ...)
           {
             ssla <- new("ShallowSimpleListAssays",
@@ -11,9 +11,9 @@ setMethod("BSrel", signature(methLevel="matrix",
                           methLevel = methLevel))
             new("BSrel",
                 assays = ssla,
-                rowData = rowRanges,
+                rowRanges = rowRanges,
                 colData = colData,
-                exptData = exptData)
+                metadata = metadata)
           })
 
 setMethod("methLevel", signature(object ="BSrel"),

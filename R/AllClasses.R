@@ -1,9 +1,9 @@
 setClass("BSrel",
-         contains = "SummarizedExperiment"
+         contains = "RangedSummarizedExperiment"
          )
 
 setClass("BSraw",
-         contains = "SummarizedExperiment"
+         contains = "RangedSummarizedExperiment"
          )
 
 

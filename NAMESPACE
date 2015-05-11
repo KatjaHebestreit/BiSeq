@@ -5,6 +5,7 @@ import(S4Vectors)
 import(IRanges)
 import(GenomeInfoDb)
 import(GenomicRanges)
+import(SummarizedExperiment)
 
 importFrom(parallel, mclapply)
 importFrom(betareg, betareg)

@@ -11,7 +11,7 @@ setGeneric("BSraw", function(methReads,
                              totalReads,
                              rowRanges,
                              colData = DataFrame(row.names=colnames(methReads)),
-                             exptData = SimpleList(),
+                             metadata = list(),
                              ...
                              )
            standardGeneric("BSraw"),
@@ -20,7 +20,7 @@ setGeneric("BSraw", function(methReads,
 setGeneric("BSrel", function(methLevel,
                              rowRanges,
                              colData = DataFrame(row.names=colnames(methLevel)),
-                             exptData = SimpleList(),
+                             metadata = list(),
                              ...
                              )
            standardGeneric("BSrel"),

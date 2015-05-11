@@ -5,7 +5,7 @@ setMethod("BSraw", signature(methReads="matrix",
                    totalReads,
                    rowRanges,
                    colData = DataFrame(row.names=colnames(methReads)),
-                   exptData = SimpleList(),
+                   metadata = list(),
                    ...)
           {
             ssla <- new("ShallowSimpleListAssays",
@@ -14,9 +14,9 @@ setMethod("BSraw", signature(methReads="matrix",
                           methReads = methReads))
             new("BSraw",
                 assays = ssla,
-                rowData = rowRanges,
+                rowRanges = rowRanges,
                 colData = colData,
-                exptData = exptData)
+                metadata = list())
           })
 
 setMethod("totalReads", signature(object ="BSraw"),

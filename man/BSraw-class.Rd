@@ -17,12 +17,12 @@
 \title{Class to contain raw Bisulfite Sequencing (BiSeq) Data}
 \description{
   The \code{BSraw} class is derived from
-  \code{SummarizedExperiment} and contains a \code{SimpleList} of
+  \code{RangedSummarizedExperiment} and contains a \code{SimpleList} of
   matrices named \code{methReads} and \code{totalReads} as \code{assays}.
 }
 \section{Objects from the Class}{
   Objects can be created by calls of the form
-  \code{BSraw(exptData = SimpleList(),
+  \code{BSraw(metadata = list(),
     rowRanges,
     colData = DataFrame(row.names=colnames(methReads)),
     methReads,
@@ -34,12 +34,12 @@
 }
 \section{Slots}{
   \describe{
-    \item{\code{exptData}:}{An optional \code{SimpleList} of arbitrary
+    \item{\code{metadata}:}{An optional \code{list} of arbitrary
       content describing the overall experiment.}
-    \item{\code{rowData}:}{Object of class \code{"GRanges"}
+    \item{\code{rowRanges}:}{Object of class \code{"GRanges"}
       containing the genome positions of CpG-sites covered by bisulfite
       sequencing. WARNING: The accessor for this slot is \code{rowRanges},
-      not \code{rowData}!}
+      not \code{rowRanges}!}
     \item{\code{colData}:}{Object of class \code{"DataFrame"}
       containing information on variable values of the samples.}
     \item{\code{assays}:}{Object of class \code{SimpleList} of two
@@ -52,7 +52,7 @@
   }
 }
 \section{Extends}{
-Class \code{"\linkS4class{SummarizedExperiment}"}, directly.
+Class \code{"\linkS4class{RangedSummarizedExperiment}"}, directly.
 }
 \section{Methods}{
   \describe{
@@ -75,20 +75,20 @@ Katja Hebestreit
 }
 
 \seealso{
-  \code{SummarizedExperiment}, \code{\link{BSrel-class}}, \code{\link{readBismark}}
+  \link{RangedSummarizedExperiment}, \code{\link{BSrel-class}}, \code{\link{readBismark}}
 }
 \examples{
 showClass("BSraw")
 
 ## How to create a BSraw object by hand:
-exptData <- SimpleList(Sequencer = "Sequencer", Year = "2013")
+metadata <- list(Sequencer = "Sequencer", Year = "2013")
 rowRanges <- GRanges(seqnames = "chr1",
                   ranges = IRanges(start = c(1,2,3), end = c(1,2,3)))
 colData <- DataFrame(group = c("cancer", "control"),
                      row.names = c("sample_1", "sample_2"))
 totalReads <- matrix(c(rep(10L, 3), rep(5L, 3)), ncol = 2)
 methReads <- matrix(c(rep(5L, 3), rep(5L, 3)), ncol = 2)
-BSraw(exptData = exptData,
+BSraw(metadata = metadata,
       rowRanges = rowRanges,
       colData = colData,
       totalReads = totalReads,

@@ -1,12 +1,12 @@
 Package: BiSeq
 Type: Package
 Title: Processing and analyzing bisulfite sequencing data
-Version: 1.9.1
-Date: 2015-04-01
+Version: 1.9.2
+Date: 2015-06-18
 Author: Katja Hebestreit, Hans-Ulrich Klein
 Maintainer: Katja Hebestreit <katjah@stanford.edu>
 Depends: R (>= 2.15.2), methods, S4Vectors, IRanges (>= 1.17.24),
-	GenomicRanges, SummarizedExperiment, Formula
+	GenomicRanges, SummarizedExperiment (>= 0.2.0), Formula
 Imports: methods, BiocGenerics, Biobase, S4Vectors, IRanges, GenomeInfoDb,
         GenomicRanges, SummarizedExperiment, rtracklayer, parallel, betareg,
         lokern, Formula, globaltest

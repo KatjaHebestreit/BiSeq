@@ -6,14 +6,11 @@ setMethod("BSrel", signature(methLevel="matrix",
                    metadata = list(),
                    ...)
           {
-            ssla <- new("ShallowSimpleListAssays",
-                        data=SimpleList(
-                          methLevel = methLevel))
-            new("BSrel",
-                assays = ssla,
+            new("BSrel", SummarizedExperiment(
+                assays = SimpleList(methLevel = methLevel),
                 rowRanges = rowRanges,
                 colData = colData,
-                metadata = metadata)
+                metadata = metadata))
           })
 
 setMethod("methLevel", signature(object ="BSrel"),

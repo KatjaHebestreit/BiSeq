@@ -8,15 +8,12 @@ setMethod("BSraw", signature(methReads="matrix",
                    metadata = list(),
                    ...)
           {
-            ssla <- new("ShallowSimpleListAssays",
-                        data=SimpleList(
-                          totalReads = totalReads,
-                          methReads = methReads))
-            new("BSraw",
-                assays = ssla,
+            new("BSraw", SummarizedExperiment(
+                assays = SimpleList(totalReads = totalReads,
+                                    methReads = methReads),
                 rowRanges = rowRanges,
                 colData = colData,
-                metadata = list())
+                metadata = list()))
           })
 
 setMethod("totalReads", signature(object ="BSraw"),

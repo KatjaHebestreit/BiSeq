@@ -438,7 +438,7 @@ data(promoters)
 data(rrbs)
 rrbs.red <- subsetByOverlaps(rrbs, promoters)
 ov <- findOverlaps(rrbs.red, promoters)
-rowRanges(rrbs.red)$cluster.id[ov@queryHits] <- promoters$acc_no[ov@subjectHits]
+rowRanges(rrbs.red)$cluster.id[queryHits(ov)] <- promoters$acc_no[subjectHits(ov)]
 head(rowRanges(rrbs.red))
 @
 From here on we can use the same pipeline as usual: Smoothing and

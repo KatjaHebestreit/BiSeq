@@ -4,7 +4,7 @@ Title: Processing and analyzing bisulfite sequencing data
 Version: 1.27.1
 Date: 2015-06-18
 Author: Katja Hebestreit, Hans-Ulrich Klein
-Maintainer: Katja Hebestreit <katjah@stanford.edu>
+Maintainer: Katja Hebestreit <katja.hebestreit@gmail.com>
 Depends: R (>= 2.15.2), methods, S4Vectors, IRanges (>= 1.17.24),
 	GenomicRanges, SummarizedExperiment (>= 0.2.0), Formula
 Imports: methods, BiocGenerics, Biobase, S4Vectors, IRanges, GenomeInfoDb,

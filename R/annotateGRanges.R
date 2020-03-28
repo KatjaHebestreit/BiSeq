@@ -54,13 +54,13 @@
 }
 
 setMethod("annotateGRanges",
-    signature=c(object="GRanges", region="GRanges", name="character", regionInfo="character"),
+    signature=c(object="GRanges", regions="GRanges", name="character", regionInfo="character"),
     .annotateGRanges)
 
 setMethod("annotateGRanges",
-    signature=c(object="GRanges", region="GRanges", name="character", regionInfo="integer"),
+    signature=c(object="GRanges", regions="GRanges", name="character", regionInfo="integer"),
     .annotateGRanges)
 
 setMethod("annotateGRanges",
-    signature=c(object="GRanges", region="GRanges", name="character", regionInfo="missing"),
+    signature=c(object="GRanges", regions="GRanges", name="character", regionInfo="missing"),
     .annotateGRanges)

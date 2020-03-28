@@ -22,8 +22,8 @@ setValidity("BSraw", function(object){
     return("The assays slot in BSraw object must be of length two.")
   if(!(all( is.element(names(assays(object)), c("totalReads", "methReads")) )))
     return("The assays slot in BSraw object must contain totalReads and methReads.")
-  if(!all( sapply(assays(object), class) == "matrix" ))
-    return("The totalReads and methReads slots of an BSrel object must be matrices.")
+  if(!all( sapply(assays(object), is.matrix) ))
+    return("The totalReads and methReads slots of an BSraw object must be matrices.")
   if(!all(sapply(assays(object), typeof) == "integer" ))
     return("The totalReads and methReads matrices of an BSraw object must contain integer data.")
 }
